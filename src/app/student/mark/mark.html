@@ -1,0 +1,52 @@
+<!-- src/app/student/marks/marks.component.html -->
+<div class="container mt-4">
+  <h2>My Marks</h2>
+  
+  <div class="row mt-4">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header bg-dark text-white">
+          Marks Summary
+        </div>
+        <div class="card-body">
+          <div class="alert alert-info">
+            Your average marks: <strong>{{ averageMarks | number:'1.0-0' }}%</strong>
+          </div>
+          
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Course Code</th>
+                <th>Course Name</th>
+                <th>Department</th>
+                <th>Year</th>
+                <th>Credits</th>
+                <th>Marks</th>
+                <th>Grade</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of coursesWithMarks">
+                <td>{{ item.course.id }}</td>
+                <td>{{ item.course.name }}</td>
+                <td>{{ item.course.department }}</td>
+                <td>{{ item.course.year }}</td>
+                <td>{{ item.course.credits }}</td>
+                <td>{{ item.mark }}</td>
+                <td>
+                  <span class="badge" [ngClass]="{
+                    'badge-success': item.mark >= 75,
+                    'badge-warning': item.mark >= 50 && item.mark < 75,
+                    'badge-danger': item.mark < 50
+                  }">
+                    {{ getGrade(item.mark) }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

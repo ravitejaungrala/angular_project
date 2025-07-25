@@ -1,0 +1,33 @@
+<div *ngIf="student">
+  <h2>Fee Payment</h2>
+  
+  <div *ngIf="student.fees.amount > 0">
+    <div class="payment-form">
+      <div class="form-group">
+        <label>Amount Due: ₹{{ student.fees.amount }}</label>
+        <input type="number" [(ngModel)]="paymentAmount" 
+               placeholder="Enter amount"
+               min="1" [max]="student.fees.amount">
+      </div>
+      
+      <button (click)="payFees()" 
+              [disabled]="!paymentAmount || paymentAmount <= 0">
+        Pay Now
+      </button>
+    </div>
+    
+    <div *ngIf="paymentDone" class="payment-success">
+      <p>Payment of ₹{{ lastPaymentAmount }} successful!</p>
+      <p *ngIf="student.fees.amount > 0">
+        Remaining due: ₹{{ student.fees.amount }}
+      </p>
+      <p *ngIf="student.fees.amount <= 0">
+        Fees fully paid!
+      </p>
+    </div>
+  </div>
+  
+  <div *ngIf="student.fees.amount <= 0" class="fully-paid">
+    <p>Your fees are fully paid.</p>
+  </div>
+</div>

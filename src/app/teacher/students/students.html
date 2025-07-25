@@ -1,0 +1,57 @@
+<!-- src/app/teacher/students/students.component.html -->
+<div class="container mt-4">
+  <h2>My Students</h2>
+  
+  <div class="row mt-4">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header bg-dark text-white">
+          View Students by Course
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <label>Select Course</label>
+            <select class="form-control" [(ngModel)]="selectedCourseId" (change)="onCourseSelect()">
+              <option [value]="null">Select a course</option>
+              <option *ngFor="let course of courses" [value]="course.id">
+                {{ course.name }} ({{ course.department }} - Year {{ course.year }})
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="row mt-4" *ngIf="selectedCourseId && students.length > 0">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header bg-dark text-white">
+          Students in Selected Course
+        </div>
+        <div class="card-body">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Student ID</th>
+                <th>Name</th>
+                <th>Department</th>
+                <th>Year</th>
+                <th>Marks</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let student of students">
+                <td>{{ student.id }}</td>
+                <td>{{ student.name }}</td>
+                <td>{{ student.department }}</td>
+                <td>{{ student.year }}</td>
+                <td>{{ student.marks[selectedCourseId] || 'Not entered' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

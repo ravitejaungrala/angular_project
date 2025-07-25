@@ -1,0 +1,73 @@
+<!-- src/app/admin/adminhome/adminhome.component.html -->
+<div class="container mt-4">
+  <h2>Admin Dashboard</h2>
+  
+  <div class="row mt-4">
+    <div class="col-md-3">
+      <div class="card text-white bg-primary mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Students</h5>
+          <p class="card-text display-4">{{ stats.students }}</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-3">
+      <div class="card text-white bg-success mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Teachers</h5>
+          <p class="card-text display-4">{{ stats.teachers }}</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-3">
+      <div class="card text-white bg-info mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Courses</h5>
+          <p class="card-text display-4">{{ stats.courses }}</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-3">
+      <div class="card text-white bg-warning mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Departments</h5>
+          <p class="card-text display-4">{{ stats.departments }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="row mt-4">
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header bg-dark text-white">
+          Quick Links
+        </div>
+        <div class="list-group list-group-flush">
+          <a routerLink="/admin/students" class="list-group-item list-group-item-action">Manage Students</a>
+          <a routerLink="/admin/teachers" class="list-group-item list-group-item-action">Manage Teachers</a>
+          <a routerLink="/admin/courses" class="list-group-item list-group-item-action">Manage Courses</a>
+          <a routerLink="/admin/departments" class="list-group-item list-group-item-action">Manage Departments</a>
+          <a routerLink="/admin/marks" class="list-group-item list-group-item-action">Manage Marks</a>
+          <a routerLink="/admin/fees" class="list-group-item list-group-item-action">Manage Fees</a>
+          <a routerLink="/admin/hostel" class="list-group-item list-group-item-action">Manage Hostel</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header bg-dark text-white">
+          Recent Activities
+        </div>
+        <div class="card-body">
+          <p>System is running smoothly.</p>
+          <p>Last login: {{ today | date:'medium' }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

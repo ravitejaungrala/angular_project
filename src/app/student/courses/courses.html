@@ -1,0 +1,36 @@
+<!-- src/app/student/courses/courses.component.html -->
+<div class="container mt-4">
+  <h2>My Courses</h2>
+  
+  <div class="row mt-4">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header bg-dark text-white">
+          Enrolled Courses
+        </div>
+        <div class="card-body">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Course ID</th>
+                <th>Name</th>
+                <th>Department</th>
+                <th>Year</th>
+                <th>Credits</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let course of courses">
+                <td>{{ course.id }}</td>
+                <td>{{ course.name }}</td>
+                <td>{{ course.department }}</td>
+                <td>{{ course.year }}</td>
+                <td>{{ course.credits }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

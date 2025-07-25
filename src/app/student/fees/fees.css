@@ -1,0 +1,22 @@
+.success {
+  color: green;
+  font-weight: bold;
+}
+
+input {
+  margin: 0 10px;
+  padding: 5px;
+}
+
+button {
+  padding: 5px 15px;
+  background: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+button:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+}

@@ -1,0 +1,59 @@
+<!-- src/app/components/navbar/navbar.component.html -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand" href="#">College Management System</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav mr-auto" *ngIf="currentUser?.role">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/{{ currentUser?.role }}" 
+             routerLinkActive="active">Dashboard</a>
+        </li>
+        <li class="nav-item dropdown" *ngIf="currentUser?.role === 'admin'">
+          <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" 
+             data-toggle="dropdown">Manage</a>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" routerLink="/admin/students">Students</a>
+            <a class="dropdown-item" routerLink="/admin/teachers">Teachers</a>
+            <a class="dropdown-item" routerLink="/admin/courses">Courses</a>
+            <a class="dropdown-item" routerLink="/admin/departments">Departments</a>
+            <a class="dropdown-item" routerLink="/admin/marks">Marks</a>
+            <a class="dropdown-item" routerLink="/admin/fees">Fees</a>
+            <a class="dropdown-item" routerLink="/admin/hostel">Hostel</a>
+          </div>
+        </li>
+        <li class="nav-item dropdown" *ngIf="currentUser?.role === 'teacher'">
+          <a class="nav-link dropdown-toggle" href="#" id="teacherDropdown" role="button" 
+             data-toggle="dropdown">Manage</a>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" routerLink="/teacher/courses">My Courses</a>
+            <a class="dropdown-item" routerLink="/teacher/students">My Students</a>
+            <a class="dropdown-item" routerLink="/teacher/marks">Enter Marks</a>
+          </div>
+        </li>
+        <li class="nav-item dropdown" *ngIf="currentUser?.role === 'student'">
+          <a class="nav-link dropdown-toggle" href="#" id="studentDropdown" role="button" 
+             data-toggle="dropdown">My Info</a>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" routerLink="/student/courses">My Courses</a>
+            <a class="dropdown-item" routerLink="/student/marks">My Marks</a>
+            <a class="dropdown-item" routerLink="/student/fees">Fee Details</a>
+            <a class="dropdown-item" routerLink="/student/hostel">Hostel Details</a>
+          </div>
+        </li>
+      </ul>
+      <ul class="navbar-nav" *ngIf="currentUser?.role">
+        <li class="nav-item">
+          <span class="navbar-text mr-3">
+            Welcome, {{ currentUser?.role }}!
+          </span>
+        </li>
+        <li class="nav-item">
+          <button class="btn btn-outline-light btn-sm" (click)="logout()">Logout</button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

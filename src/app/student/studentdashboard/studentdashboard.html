@@ -1,0 +1,96 @@
+<!-- src/app/student/studentdashboard/studentdashboard.component.html -->
+<div class="container mt-4">
+  <h2>Student Dashboard</h2>
+  <p>
+    Welcome, {{ student.name }} ({{ student.department }} - Year {{ student.year }})
+  </p>
+
+  <div class="row mt-4">
+    <!-- Courses Card -->
+    <div class="col-md-4">
+      <div class="card text-white bg-primary mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Courses</h5>
+          <p class="card-text display-4">{{ student.courses.length }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Average Marks Card -->
+    <div class="col-md-4">
+      <div class="card text-white bg-success mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Average Marks</h5>
+          <p class="card-text display-4">{{ averageMarks | number: '1.0-0' }}%</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fees Status Card -->
+    <div class="col-md-4">
+      <div class="card text-white bg-info mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Fees Status</h5>
+          <p class="card-text display-4">
+            <span [ngClass]="student.fees.paid ? 'text-success' : 'text-danger'">
+              {{ student.fees.paid ? 'Paid' : 'Due' }}
+            </span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+<div class="dashboard-container" *ngIf="student">
+  <div class="card fee-summary">
+    <h3>Fee Summary</h3>
+    
+    <div class="fee-details">
+      <div class="fee-row">
+        <span class="fee-label">Total Fee:</span>
+        <span class="fee-value">₹{{ totalFee }}</span>
+      </div>
+      
+      <div class="fee-row">
+        <span class="fee-label">Amount Paid:</span>
+        <span class="fee-value paid">₹{{ amountPaid }}</span>
+      </div>
+      
+      <div class="fee-row">
+        <span class="fee-label">Amount Due:</span>
+        <span class="fee-value due">₹{{ amountDue }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+  <div class="row mt-4">
+    <!-- Quick Links -->
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header bg-dark text-white">Quick Links</div>
+        <div class="list-group list-group-flush">
+          <a routerLink="/student/courses" class="list-group-item list-group-item-action">My Courses</a>
+          <a routerLink="/student/marks" class="list-group-item list-group-item-action">My Marks</a>
+          <a routerLink="/student/fees" class="list-group-item list-group-item-action">Fee Details</a>
+          <a routerLink="/student/hostel" class="list-group-item list-group-item-action">Hostel Details</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Activities -->
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header bg-dark text-white">Recent Activities</div>
+        <div class="card-body">
+          <p>You are enrolled in {{ student.courses.length }} courses this semester.</p>
+          <p *ngIf="student?.hostel">
+            Your hostel room: {{ student.hostel?.block }} - {{ student.hostel?.roomNo }}
+          </p>
+          <p>
+            Fees: {{ student.fees.amount | currency: 'INR' }} 
+            ({{ student.fees.paid ? 'Paid' : 'Due' }})
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

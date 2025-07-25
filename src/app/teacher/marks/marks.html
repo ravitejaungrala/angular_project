@@ -1,0 +1,66 @@
+<!-- src/app/teacher/marks/marks.component.html -->
+<div class="container mt-4">
+  <h2>Enter Marks</h2>
+  
+  <div class="row mt-4">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header bg-dark text-white">
+          Select Course
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <label>Select Course</label>
+            <select class="form-control" [(ngModel)]="selectedCourseId" (change)="onCourseSelect()">
+              <option [value]="null">Select a course</option>
+              <option *ngFor="let course of courses" [value]="course.id">
+                {{ course.name }} ({{ course.department }} - Year {{ course.year }})
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="row mt-4" *ngIf="selectedCourseId">
+  <div class="col-md-12" *ngIf="students.length > 0;">
+      <div class="card">
+        <div class="card-header bg-dark text-white">
+          Enter Marks for Students
+        </div>
+        <div class="card-body">
+          <form [formGroup]="marksForm" (ngSubmit)="onSubmit()">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Student ID</th>
+                  <th>Name</th>
+                  <th>Department</th>
+                  <th>Year</th>
+                  <th>Marks (0-100)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let student of students">
+                  <td>{{ student.id }}</td>
+                  <td>{{ student.name }}</td>
+                  <td>{{ student.department }}</td>
+                  <td>{{ student.year }}</td>
+                  <td>
+                    <input type="number" min="0" max="100" class="form-control" 
+                      [formControlName]="'student_' + student.id">
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            
+            <button type="submit" class="btn btn-primary" [disabled]="marksForm.invalid">
+              Save Marks
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

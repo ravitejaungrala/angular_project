@@ -1,0 +1,52 @@
+<!-- src/app/teacher/teacherdashboard/teacherdashboard.component.html -->
+<div class="container mt-4">
+  <h2>Teacher Dashboard</h2>
+  <p>Welcome, {{ teacher.name }} ({{ teacher.department }})</p>
+  
+  <div class="row mt-4">
+    <div class="col-md-6">
+      <div class="card text-white bg-primary mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Assigned Courses</h5>
+          <p class="card-text display-4">{{ stats.courses }}</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-6">
+      <div class="card text-white bg-success mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Students</h5>
+          <p class="card-text display-4">{{ stats.students }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="row mt-4">
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header bg-dark text-white">
+          Quick Links
+        </div>
+        <div class="list-group list-group-flush">
+          <a routerLink="/teacher/courses" class="list-group-item list-group-item-action">My Courses</a>
+          <a routerLink="/teacher/students" class="list-group-item list-group-item-action">My Students</a>
+          <a routerLink="/teacher/marks" class="list-group-item list-group-item-action">Enter Marks</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header bg-dark text-white">
+          Recent Activities
+        </div>
+        <div class="card-body">
+          <p>You have {{ stats.courses }} courses assigned.</p>
+          <p>You are teaching {{ stats.students }} students.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

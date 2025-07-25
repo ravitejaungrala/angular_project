@@ -1,0 +1,98 @@
+<!-- src/app/admin/fees/fees.component.html -->
+<div class="container mt-4">
+  <h2>Fee Management</h2>
+  
+  <div class="row mt-4">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header bg-dark text-white">
+          Filter Students
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Search</label>
+                <input type="text" class="form-control" [(ngModel)]="searchTerm" 
+                       (input)="applyFilters()" placeholder="Search by name or ID">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Department</label>
+                <select class="form-control" [(ngModel)]="selectedDepartment" (change)="applyFilters()">
+                  <option value="">All Departments</option>
+                  <option *ngFor="let dept of departments" [value]="dept">{{ dept }}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Payment Status</label>
+                <select class="form-control" [(ngModel)]="paymentStatus" (change)="applyFilters()">
+                  <option value="all">All</option>
+                  <option value="paid">Paid</option>
+                  <option value="due">Due</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="row mt-4">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header bg-dark text-white">
+          Student Fee Details
+        </div>
+        <div class="card-body">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Department</th>
+                <th>Year</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let student of filteredStudents">
+                <td>{{ student.id }}</td>
+                <td>{{ student.name }}</td>
+                <td>{{ student.department }}</td>
+                <td>{{ student.year }}</td>
+                <td>{{ student.fees.amount | currency:'INR' }}</td>
+                <td>
+                  <span class="badge" [ngClass]="student.fees.paid ? 'badge-success' : 'badge-danger'">
+                    {{ student.fees.paid ? 'Paid' : 'Due' }}
+                  </span>
+                </td>
+                <td>
+                
+           <!-- Add to admin fees.component.html -->
+<td>
+  <input type="number" class="form-control" style="width: 100px;" 
+         [(ngModel)]="student.fees.amount" 
+         (change)="updateFeeAmount(student, student.fees.amount)"
+         min="0">
+</td> 
+<button class="btn btn-sm" 
+  [ngClass]="student.fees.paid ? 'btn-secondary' : 'btn-success'"
+  (click)="updatePaymentStatus(student, !student.fees.paid)">
+  {{ student.fees.paid ? 'Mark as Due' : 'Mark as Paid' }}
+</button>
+                
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

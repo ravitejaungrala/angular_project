@@ -9,16 +9,25 @@ import { Dataservices } from '../../service/dataservices';
 })
 export class Hostel {
 
- student!: Student;
-  hasHostel: boolean = false;
+  student: any;
+  paymentAmount: number | null = null;
+  paymentDone: boolean = false;
+  lastPaymentAmount: number = 0;
 
-  constructor(private dataService: Dataservices) {}
 
-  ngOnInit(): void {
+ constructor(private dataService: Dataservices) {
     const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
     if (user.role === 'student' && user.id) {
-      this.student = this.dataService.getStudentById(user.id)!;
-      this.hasHostel = !!this.student.hostel;
+      this.student = this.dataService.getStudentById(user.id);
+    }
+  }
+
+  payHostelFees() {
+    if (this.paymentAmount && this.paymentAmount > 0 && this.student?.hostel) {
+      this.lastPaymentAmount = this.paymentAmount;
+      this.dataService.payHostelFees(this.student.id, this.paymentAmount);
+      this.paymentDone = true;
+      this.paymentAmount = null;
     }
   }
 }

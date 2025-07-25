@@ -7,7 +7,15 @@ interface Student {
   courses: number[];
   marks: { [courseId: number]: number };
   fees: { amount: number; paid: boolean };
-  hostel?: { roomNo: string; block: string };
+  hostel?: {
+    allocated: boolean;
+    roomNo?: string;
+    block?: string;
+    fees: {
+      amount: number;
+      paid: boolean;
+    };
+  };
 }
 
 interface Teacher {

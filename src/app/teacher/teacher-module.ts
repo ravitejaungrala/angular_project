@@ -7,6 +7,9 @@ import { Marks } from './marks/marks';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { Dataservices } from '../service/dataservices';
+import { Teachernavbar } from './teachernavbar/teachernavbar';
+import { AdminRoutingModule } from '../admin-routing.module';
+import { TeacherRoutingModule } from '../teacher-routing.module';
 
 
 
@@ -15,19 +18,15 @@ import { Dataservices } from '../service/dataservices';
     Teacherdashboard,
     Courses,
     Students,
-    Marks
+    Marks,
+    Teachernavbar
   ],
-  imports: [
-    CommonModule,
-   FormsModule,
-    ReactiveFormsModule,
-    RouterModule.forChild([
-      { path: '', component: Teacherdashboard },
-      { path: 'courses', component: Courses },
-      { path: 'students', component: Students },
-      { path: 'marks', component: Marks }
-    ])
-  ],
-  providers: [Dataservices]
-})
+ imports: [
+     CommonModule,
+      FormsModule,
+     ReactiveFormsModule,
+     TeacherRoutingModule
+   ],
+   providers: [Dataservices]
+ })
 export class TeacherModule { }

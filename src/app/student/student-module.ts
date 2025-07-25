@@ -8,6 +8,8 @@ import { Hostel } from './hostel/hostel';
 import { RouterModule } from '@angular/router';
 import { Dataservices } from '../service/dataservices';
 import { FormsModule } from '@angular/forms';
+import { Studentnavbar } from './studentnavbar/studentnavbar';
+import { StudentRoutingModule } from '../student-routing.module';
 
 
 
@@ -17,18 +19,13 @@ import { FormsModule } from '@angular/forms';
     Courses,
     Mark,
     Fees,
-    Hostel
+    Hostel,
+    Studentnavbar
   ],
   imports: [
     CommonModule,
     FormsModule,
-    RouterModule.forChild([
-      { path: '', component: Studentdashboard},
-      { path: 'courses', component: Courses },
-      { path: 'marks', component: Mark},
-      { path: 'fees', component: Fees },
-      { path: 'hostel', component: Hostel }
-    ])
+   StudentRoutingModule
   ],
   providers: [Dataservices]
 })

@@ -1,40 +1,39 @@
-<!-- src/app/admin/hostel/hostel.component.html -->
-<div class="container mt-4">
-  <h2>Hostel Management</h2>
+<div class="container">
+  <h2>Hostel Allocation</h2>
   
-  <div class="row mt-4">
-    <div class="col-md-4">
-      <div class="card">
-        <div class="card-header bg-dark text-white">
-          Allocate Hostel
-        </div>
-        <div class="card-body">
-          <form [formGroup]="allocationForm" (ngSubmit)="onAllocate()">
-            <div class="form-group">
-              <label>Student ID</label>
-              <input type="number" class="form-control" formControlName="studentId">
-            </div>
-            
-            <div class="form-group">
-              <label>Room No</label>
-              <input type="text" class="form-control" formControlName="roomNo">
-            </div>
-            
-            <div class="form-group">
-              <label>Block</label>
-              <select class="form-control" formControlName="block">
-                <option value="">Select Block</option>
-                <option *ngFor="let block of blocks" [value]="block">{{ block }}</option>
-              </select>
-            </div>
-            
-            <button type="submit" class="btn btn-primary" [disabled]="allocationForm.invalid">
-              Allocate
-            </button>
-          </form>
-        </div>
-      </div>
+  <div class="allocation-form">
+    <div class="form-group">
+      <label>Select Student</label>
+      <select [(ngModel)]="selectedStudentId" class="form-control">
+        <option [value]="null">Select Student</option>
+        <option *ngFor="let student of students" [value]="student.id">
+          {{student.name}} (ID: {{student.id}})
+        </option>
+      </select>
     </div>
+
+    <div class="form-group">
+      <label>Room Number</label>
+      <input type="text" [(ngModel)]="roomNo" class="form-control">
+    </div>
+
+    <div class="form-group">
+      <label>Block</label>
+      <input type="text" [(ngModel)]="block" class="form-control">
+    </div>
+
+    <div class="form-group">
+      <label>Hostel Fee Amount</label>
+      <input type="number" [(ngModel)]="hostelFeeAmount" class="form-control" min="1000">
+    </div>
+
+    <button (click)="allocateHostel()" 
+            [disabled]="!selectedStudentId || !roomNo || !block"
+            class="btn btn-primary">
+      Allocate Hostel
+    </button>
+  </div>
+</div>
     
     <div class="col-md-8">
       <div class="card">
@@ -85,5 +84,4 @@
         </div>
       </div>
     </div>
-  </div>
-</div>
+  

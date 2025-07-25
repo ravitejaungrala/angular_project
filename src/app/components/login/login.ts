@@ -43,10 +43,10 @@ LoginForm: FormGroup;
           this.router.navigate(['/admin/adminhome']);
           break;
         case 'teacher':
-          this.router.navigate(['/teacher']);
+          this.router.navigate(['/teacher/teacherhome']);
           break;
         case 'student':
-          this.router.navigate(['/student']);
+          this.router.navigate(['/student/studenthome']);
           break;
       }
     } else {

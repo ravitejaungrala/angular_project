@@ -10,7 +10,9 @@ import { Fees } from './fees/fees';
 import { Hostel } from './hostel/hostel';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Dataservices } from '../service/dataservices';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
+import { Adminnavbar } from './adminnavbar/adminnavbar';
+import { AdminRoutingModule } from '../admin-routing.module';
 
 
 
@@ -23,23 +25,14 @@ import { RouterModule } from '@angular/router';
     Departments,
     Marks,
     Fees,
-    Hostel
+    Hostel,
+    Adminnavbar
   ],
   imports: [
     CommonModule,
      FormsModule,
     ReactiveFormsModule,
-    RouterModule.forChild([
-      { path: '', redirectTo: 'adminhome', pathMatch: 'full' },
-      { path: 'adminhome', component: Adminhome },
-      { path: 'students', component: Students },
-      { path: 'teachers', component: Teachers },
-      { path: 'courses', component: Courses},
-      { path: 'departments', component: Departments },
-      { path: 'marks', component: Marks},
-      { path: 'fees', component: Fees },
-      { path: 'hostel', component: Hostel }
-    ])
+    AdminRoutingModule
   ],
   providers: [Dataservices]
 })

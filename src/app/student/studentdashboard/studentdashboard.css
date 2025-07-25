@@ -1,0 +1,27 @@
+.fee-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  padding: 8px;
+  border-bottom: 1px solid #eee;
+}
+
+.fee-label {
+  font-weight: bold;
+}
+
+.fee-value {
+  font-weight: 500;
+}
+
+.paid {
+  color: #28a745; /* Green for paid amounts */
+}
+
+.due {
+  color: #dc3545; /* Red for due amounts */
+}
+
+.card-header {
+  font-weight: bold;
+}

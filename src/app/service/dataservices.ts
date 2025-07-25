@@ -155,20 +155,21 @@ private departments: Department[] = [
 // 
  private students: Student[] = [
     // CSE Students (10)
-    { id: 1, name: 'Alice Johnson', email: 'alice@student.edu', department: 'CSE', year: 1, 
-      courses: [101], marks: {101: 85}, fees: {amount: 50000, paid: true}, hostel: {roomNo: 'A101', block: 'A'} },
+    { id: 1, name: 'Sai Akhil', email: 'saiakhil@student.edu', department: 'CSE', year: 1, 
+      courses: [101], marks: {101: 85}, fees: {amount: 50000, paid: false},  hostel: {allocated: true, roomNo: 'A101', block: 'A', fees: {amount: 10000, paid: false}} },
     { id: 2, name: 'Bob Smith', email: 'bob@student.edu', department: 'CSE', year: 1, 
-      courses: [101], marks: {101: 78}, fees: {amount: 50000, paid: true}, hostel: {roomNo: 'A102', block: 'A'} },
+      courses: [101], marks: {101: 78}, fees: {amount: 50000, paid: true},  hostel: {allocated: true, roomNo: 'A102', block: 'A', fees: {amount: 10000, paid: true}} },
     { id: 3, name: 'Charlie Brown', email: 'charlie@student.edu', department: 'CSE', year: 2, 
-      courses: [102, 104], marks: {102: 92, 104: 88}, fees: {amount: 50000, paid: true}, hostel: {roomNo: 'B101', block: 'B'} },
+      courses: [102, 104], marks: {102: 92, 104: 88}, fees: {amount: 50000, paid: true},  hostel: {allocated: true, roomNo: 'B101', block: 'B', fees: {amount: 10000, paid: true}}  },
     { id: 4, name: 'David Wilson', email: 'david@student.edu', department: 'CSE', year: 2, 
       courses: [102, 104], marks: {102: 85, 104: 76}, fees: {amount: 50000, paid: false} },
     { id: 5, name: 'Eva Davis', email: 'eva@student.edu', department: 'CSE', year: 3, 
-      courses: [103, 105, 106], marks: {103: 89, 105: 91, 106: 84}, fees: {amount: 50000, paid: true}, hostel: {roomNo: 'C101', block: 'C'} },
+      courses: [103, 105, 106], marks: {103: 89, 105: 91, 106: 84}, fees: {amount: 50000, paid: true}, hostel: {allocated: true, roomNo: 'C101', block: 'C', fees: {amount: 10000, paid: true}} },
     { id: 6, name: 'Frank Miller', email: 'frank@student.edu', department: 'CSE', year: 3, 
       courses: [103, 105, 106], marks: {103: 76, 105: 82, 106: 79}, fees: {amount: 50000, paid: true} },
+
     { id: 7, name: 'Grace Lee', email: 'grace@student.edu', department: 'CSE', year: 4, 
-      courses: [107, 108, 109, 110], marks: {107: 88, 108: 94, 109: 90, 110: 85}, fees: {amount: 50000, paid: true}, hostel: {roomNo: 'D101', block: 'D'} },
+      courses: [107, 108, 109, 110], marks: {107: 88, 108: 94, 109: 90, 110: 85}, fees: {amount: 50000, paid: true},  hostel: {allocated: true, roomNo: 'D101', block: 'D', fees: {amount: 10000, paid: true}}  },
     { id: 8, name: 'Henry Taylor', email: 'henry@student.edu', department: 'CSE', year: 4, 
       courses: [107, 108, 109, 110], marks: {107: 82, 108: 89, 109: 85, 110: 78}, fees: {amount: 50000, paid: false} },
     { id: 9, name: 'Ivy Clark', email: 'ivy@student.edu', department: 'CSE', year: 4, 
@@ -178,19 +179,19 @@ private departments: Department[] = [
     
     // AIML Students (10)
     { id: 11, name: 'Karen White', email: 'karen@student.edu', department: 'AIML', year: 1, 
-      courses: [201, 202], marks: {201: 85, 202: 88}, fees: {amount: 55000, paid: true}, hostel: {roomNo: 'A201', block: 'A'} },
+      courses: [201, 202], marks: {201: 85, 202: 88}, fees: {amount: 55000, paid: true}, hostel: {allocated: true, roomNo: 'A201', block: 'A', fees: {amount: 10000, paid: true}}  },
     { id: 12, name: 'Leo Harris', email: 'leo@student.edu', department: 'AIML', year: 1, 
       courses: [201, 202], marks: {201: 78, 202: 82}, fees: {amount: 55000, paid: true} },
     { id: 13, name: 'Mia Martin', email: 'mia@student.edu', department: 'AIML', year: 2, 
-      courses: [203, 204], marks: {203: 92, 204: 88}, fees: {amount: 55000, paid: true}, hostel: {roomNo: 'B201', block: 'B'} },
+      courses: [203, 204], marks: {203: 92, 204: 88}, fees: {amount: 55000, paid: true}, hostel: {allocated: true, roomNo: 'B201', block: 'B', fees: {amount: 10000, paid: true}} },
     { id: 14, name: 'Noah Thompson', email: 'noah@student.edu', department: 'AIML', year: 2, 
       courses: [203, 204], marks: {203: 85, 204: 76}, fees: {amount: 55000, paid: false} },
     { id: 15, name: 'Olivia Garcia', email: 'olivia@student.edu', department: 'AIML', year: 3, 
-      courses: [205, 206], marks: {205: 89, 206: 91}, fees: {amount: 55000, paid: true}, hostel: {roomNo: 'C201', block: 'C'} },
+      courses: [205, 206], marks: {205: 89, 206: 91}, fees: {amount: 55000, paid: true},  hostel: {allocated: true, roomNo: 'C201', block: 'C', fees: {amount: 10000, paid: true}} },
     { id: 16, name: 'Paul Martinez', email: 'paul@student.edu', department: 'AIML', year: 3, 
       courses: [205, 206], marks: {205: 76, 206: 82}, fees: {amount: 55000, paid: true} },
     { id: 17, name: 'Quinn Robinson', email: 'quinn@student.edu', department: 'AIML', year: 4, 
-      courses: [207, 208, 209, 210], marks: {207: 88, 208: 94, 209: 90, 210: 85}, fees: {amount: 55000, paid: true}, hostel: {roomNo: 'D201', block: 'D'} },
+      courses: [207, 208, 209, 210], marks: {207: 88, 208: 94, 209: 90, 210: 85}, fees: {amount: 55000, paid: true},  hostel: {allocated: true, roomNo: 'D201', block: 'D', fees: {amount: 10000, paid: true}}  },
     { id: 18, name: 'Rachel Clark', email: 'rachel@student.edu', department: 'AIML', year: 4, 
       courses: [207, 208, 209, 210], marks: {207: 82, 208: 89, 209: 85, 210: 78}, fees: {amount: 55000, paid: false} },
     { id: 19, name: 'Samuel Rodriguez', email: 'samuel@student.edu', department: 'AIML', year: 4, 
@@ -200,19 +201,19 @@ private departments: Department[] = [
     
     // IT Students (10)
     { id: 21, name: 'Umar Walker', email: 'umar@student.edu', department: 'IT', year: 1, 
-      courses: [301], marks: {301: 85}, fees: {amount: 52000, paid: true}, hostel: {roomNo: 'A301', block: 'A'} },
+      courses: [301], marks: {301: 85}, fees: {amount: 52000, paid: true},hostel: {allocated: true, roomNo: 'A301', block: 'A', fees: {amount: 10000, paid: true}}  },
     { id: 22, name: 'Vera Hall', email: 'vera@student.edu', department: 'IT', year: 1, 
       courses: [301], marks: {301: 78}, fees: {amount: 52000, paid: true} },
     { id: 23, name: 'Walter Allen', email: 'walter@student.edu', department: 'IT', year: 2, 
-      courses: [302, 303], marks: {302: 92, 303: 88}, fees: {amount: 52000, paid: true}, hostel: {roomNo: 'B301', block: 'B'} },
+      courses: [302, 303], marks: {302: 92, 303: 88}, fees: {amount: 52000, paid: true},  hostel: {allocated: true, roomNo: 'B301', block: 'B', fees: {amount: 10000, paid: true}}  },
     { id: 24, name: 'Xena Young', email: 'xena@student.edu', department: 'IT', year: 2, 
       courses: [302, 303], marks: {302: 85, 303: 76}, fees: {amount: 52000, paid: false} },
     { id: 25, name: 'Yara Hernandez', email: 'yara@student.edu', department: 'IT', year: 3, 
-      courses: [304, 305, 306], marks: {304: 89, 305: 91, 306: 84}, fees: {amount: 52000, paid: true}, hostel: {roomNo: 'C301', block: 'C'} },
+      courses: [304, 305, 306], marks: {304: 89, 305: 91, 306: 84}, fees: {amount: 52000, paid: true},  hostel: {allocated: true, roomNo: 'C301', block: 'C', fees: {amount: 10000, paid: true}} },
     { id: 26, name: 'Zack King', email: 'zack@student.edu', department: 'IT', year: 3, 
       courses: [304, 305, 306], marks: {304: 76, 305: 82, 306: 79}, fees: {amount: 52000, paid: true} },
     { id: 27, name: 'Ava Wright', email: 'ava@student.edu', department: 'IT', year: 4, 
-      courses: [307, 308, 309, 310], marks: {307: 88, 308: 94, 309: 90, 310: 85}, fees: {amount: 52000, paid: true}, hostel: {roomNo: 'D301', block: 'D'} },
+      courses: [307, 308, 309, 310], marks: {307: 88, 308: 94, 309: 90, 310: 85}, fees: {amount: 52000, paid: true}, hostel: {allocated: true, roomNo: 'D301', block: 'D', fees: {amount: 10000, paid: true}}  },
     { id: 28, name: 'Ben Lopez', email: 'ben@student.edu', department: 'IT', year: 4, 
       courses: [307, 308, 309, 310], marks: {307: 82, 308: 89, 309: 85, 310: 78}, fees: {amount: 52000, paid: false} },
     { id: 29, name: 'Cara Scott', email: 'cara@student.edu', department: 'IT', year: 4, 
@@ -222,19 +223,19 @@ private departments: Department[] = [
     
     // ECE Students (10)
     { id: 31, name: 'Ethan Adams', email: 'ethan@student.edu', department: 'ECE', year: 1, 
-      courses: [401], marks: {401: 85}, fees: {amount: 48000, paid: true}, hostel: {roomNo: 'A401', block: 'A'} },
+      courses: [401], marks: {401: 85}, fees: {amount: 48000, paid: true}, hostel: {allocated: true, roomNo: 'A401', block: 'A', fees: {amount: 10000, paid: true}} },
     { id: 32, name: 'Fiona Baker', email: 'fiona@student.edu', department: 'ECE', year: 1, 
       courses: [401], marks: {401: 78}, fees: {amount: 48000, paid: true} },
     { id: 33, name: 'George Carter', email: 'george@student.edu', department: 'ECE', year: 2, 
-      courses: [402, 403], marks: {402: 92, 403: 88}, fees: {amount: 48000, paid: true}, hostel: {roomNo: 'B401', block: 'B'} },
+      courses: [402, 403], marks: {402: 92, 403: 88}, fees: {amount: 48000, paid: true}, hostel: {allocated: true, roomNo: 'B401', block: 'B', fees: {amount: 10000, paid: true}}  },
     { id: 34, name: 'Hannah Evans', email: 'hannah@student.edu', department: 'ECE', year: 2, 
       courses: [402, 403], marks: {402: 85, 403: 76}, fees: {amount: 48000, paid: false} },
     { id: 35, name: 'Ian Foster', email: 'ian@student.edu', department: 'ECE', year: 3, 
-      courses: [404, 405, 406], marks: {404: 89, 405: 91, 406: 84}, fees: {amount: 48000, paid: true}, hostel: {roomNo: 'C401', block: 'C'} },
+      courses: [404, 405, 406], marks: {404: 89, 405: 91, 406: 84}, fees: {amount: 48000, paid: true},hostel: {allocated: true, roomNo: 'C401', block: 'C', fees: {amount: 10000, paid: true}} },
     { id: 36, name: 'Julia Grant', email: 'julia@student.edu', department: 'ECE', year: 3, 
       courses: [404, 405, 406], marks: {404: 76, 405: 82, 406: 79}, fees: {amount: 48000, paid: true} },
     { id: 37, name: 'Kevin Hill', email: 'kevin@student.edu', department: 'ECE', year: 4, 
-      courses: [407, 408, 409, 410], marks: {407: 88, 408: 94, 409: 90, 410: 85}, fees: {amount: 48000, paid: true}, hostel: {roomNo: 'D401', block: 'D'} },
+      courses: [407, 408, 409, 410], marks: {407: 88, 408: 94, 409: 90, 410: 85}, fees: {amount: 48000, paid: true}, hostel: {allocated: true, roomNo: 'D401', block: 'D', fees: {amount: 10000, paid: true}} },
     { id: 38, name: 'Lily Ingram', email: 'lily@student.edu', department: 'ECE', year: 4, 
       courses: [407, 408, 409, 410], marks: {407: 82, 408: 89, 409: 85, 410: 78}, fees: {amount: 48000, paid: false} },
     { id: 39, name: 'Mason Jones', email: 'mason@student.edu', department: 'ECE', year: 4, 
@@ -345,12 +346,7 @@ private departments: Department[] = [
     this.students.push(student);
   }
 
-  updateStudent(updatedStudent: Student): void {
-    const index = this.students.findIndex(student => student.id === updatedStudent.id);
-    if (index !== -1) {
-      this.students[index] = updatedStudent;
-    }
-  }
+ 
 
   deleteStudent(id: number): void {
     this.students = this.students.filter(student => student.id !== id);
@@ -396,6 +392,53 @@ private departments: Department[] = [
 //     );
 //   }
  // In src/app/services/data.service.ts
+ // Add these methods to your DataService class
+
+// Hostel Allocation
+allocateHostel(studentId: number, roomNo: string, block: string, hostelFeeAmount: number): void {
+  const student = this.getStudentById(studentId);
+  if (student) {
+    student.hostel = {
+      allocated: true,
+      roomNo,
+      block,
+      fees: {
+        amount: hostelFeeAmount,
+        paid: false
+      }
+    };
+    this.updateStudent(student);
+  }
+}
+
+// Hostel Fee Payment
+payHostelFees(studentId: number, amount: number): void {
+  const student = this.getStudentById(studentId);
+  if (student?.hostel) {
+    student.hostel.fees.amount -= amount;
+    if (student.hostel.fees.amount <= 0) {
+      student.hostel.fees.paid = true;
+      student.hostel.fees.amount = 0;
+    }
+    this.updateStudent(student);
+  }
+}
+
+// Update the existing updateStudent method to handle hostel fees
+updateStudent(student: Student): void {
+  const index = this.students.findIndex(s => s.id === student.id);
+  if (index !== -1) {
+    this.students[index] = student;
+    // Update payment history
+    this.updatePaymentHistory(student);
+  }
+}
+
+private updatePaymentHistory(student: Student): void {
+  const history = JSON.parse(localStorage.getItem('paymentHistory') || '[]');
+  // Add logic to track both college and hostel payments
+  localStorage.setItem('paymentHistory', JSON.stringify(history));
+}
 validateUser(username: string, password: string): { role: string, id?: number } | null {
   console.log('Validating:', username, password); // Debug log
   

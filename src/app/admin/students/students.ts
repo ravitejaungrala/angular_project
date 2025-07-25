@@ -28,8 +28,11 @@ export class Students {
       year: ['', Validators.required],
       feesAmount: ['', Validators.required],
       feesPaid: [false],
+       hostelAllocated: [false],
       hostelRoom: [''],
-      hostelBlock: ['']
+      hostelBlock: [''],
+      hostelFeesAmount: [''],
+      hostelFeesPaid: [false] 
     });
   }
 
@@ -55,12 +58,17 @@ export class Students {
       courses: [],
       marks: {},
       fees: {
-        amount: formValue.feesAmount,
-        paid: formValue.feesPaid
+        amount: formValue.collegeFeesAmount,
+        paid: formValue.collegeFeesPaid
       },
-      hostel: formValue.hostelRoom ? {
-        roomNo: formValue.hostelRoom,
-        block: formValue.hostelBlock
+      hostel: formValue.hostelAllocated ? {
+        allocated: true,
+        roomNo: formValue.hostelRoom || undefined,
+        block: formValue.hostelBlock || undefined,
+        fees: {
+          amount: formValue.hostelFeesAmount || 0,
+          paid: formValue.hostelFeesPaid
+        }
       } : undefined
     };
 
@@ -83,10 +91,13 @@ export class Students {
       email: student.email,
       department: student.department,
       year: student.year,
-      feesAmount: student.fees.amount,
-      feesPaid: student.fees.paid,
+      collegeFeesAmount: student.fees.amount,
+      collegeFeesPaid: student.fees.paid,
+      hostelAllocated: student.hostel?.allocated || false,
       hostelRoom: student.hostel?.roomNo || '',
-      hostelBlock: student.hostel?.block || ''
+      hostelBlock: student.hostel?.block || '',
+      hostelFeesAmount: student.hostel?.fees.amount || '',
+      hostelFeesPaid: student.hostel?.fees.paid || false
     });
   }
 
@@ -106,5 +117,20 @@ export class Students {
   private generateId(): number {
     const students = this.dataService.getStudents();
     return students.length > 0 ? Math.max(...students.map(s => s.id)) + 1 : 1;
+  }
+
+  onHostelAllocationChange(allocated: boolean): void {
+    if (allocated) {
+      this.studentForm.get('hostelRoom')?.setValidators([Validators.required]);
+      this.studentForm.get('hostelBlock')?.setValidators([Validators.required]);
+      this.studentForm.get('hostelFeesAmount')?.setValidators([Validators.required, Validators.min(1)]);
+    } else {
+      this.studentForm.get('hostelRoom')?.clearValidators();
+      this.studentForm.get('hostelBlock')?.clearValidators();
+      this.studentForm.get('hostelFeesAmount')?.clearValidators();
+    }
+    this.studentForm.get('hostelRoom')?.updateValueAndValidity();
+    this.studentForm.get('hostelBlock')?.updateValueAndValidity();
+    this.studentForm.get('hostelFeesAmount')?.updateValueAndValidity();
   }
 }

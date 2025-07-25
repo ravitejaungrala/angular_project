@@ -1,0 +1,68 @@
+<div class="container-fluid">
+    <div class="row min-vh-100">
+      <div class="col-md-2 text-white p-0" style="background-color: #c6c6ec;">
+        <nav class="navbar navbar-expand-lg navbar-dark flex-column p-3 sidebar">
+          <a class="navbar-brand mb-4 text-center" href="#">
+            <img src="/logo.png" alt="Logo" width="100" height="100" class="d-inline-block">
+          </a>
+          
+          <ul class="navbar-nav flex-column w-100">
+            <div class="radio-container sidebar-radio">
+              <input id="nav-dashboard" name="nav" type="radio" checked />
+              <label for="nav-dashboard" routerLink="/admin/adminhome">
+                <i class="bi bi-speedometer2 me-2"></i> Home
+              </label>
+
+              <input id="nav-students" name="nav" type="radio" />
+              <label for="nav-students" routerLink="/admin/students">
+                <i class="bi bi-speedometer2 me-2"></i> Student
+              </label>
+
+              <input id="nav-teachers" name="nav" type="radio" />
+              <label for="nav-teachers" routerLink="/admin/teachers">
+                <i class="bi bi-speedometer2 me-2"></i> Teachers
+              </label>
+
+              <input id="nav-courses" name="nav" type="radio" />
+              <label for="nav-courses" routerLink="/admin/courses">
+                <i class="bi bi-speedometer2 me-2"></i> Courses
+              </label>
+              
+              <input id="nav-courses" name="nav" type="radio" />
+              <label for="nav-courses" routerLink="/admin/marks">
+                <i class="bi bi-speedometer2 me-2"></i> Marks
+              </label>
+
+              <input id="nav-departments" name="nav" type="radio" />
+              <label for="nav-departments" routerLink="/admin/departments">
+                <i class="bi bi-speedometer2 me-2"></i> Departments
+              </label>
+
+              <input id="nav-fees" name="nav" type="radio" />
+              <label for="nav-fees" routerLink="/admin/fees">
+                <i class="bi bi-speedometer2 me-2"></i> College Fees
+              </label>
+
+              <input id="nav-hostel" name="nav" type="radio" />
+              <label for="nav-hostel" routerLink="/admin/hostel">
+                <i class="bi bi-speedometer2 me-2"></i> Hostel
+              </label>
+
+              <input id="nav-logout" name="nav" type="radio" />
+              <label for="nav-logout" routerLink="/logout">
+                <i class="bi bi-box-arrow-right me-2"></i> Logout
+              </label>
+
+              <div class="glider-container">
+                <div class="glider"></div>
+              </div>
+            </div>
+          </ul>
+        </nav>
+      </div>
+      
+      <div class="col-md-10 p-4">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+</div>

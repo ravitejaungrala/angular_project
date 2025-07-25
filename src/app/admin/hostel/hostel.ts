@@ -9,21 +9,25 @@ import { Dataservices } from '../../service/dataservices';
   styleUrl: './hostel.css'
 })
 export class Hostel {
-  students: Student[] = [];
+  students: any[] = [];
   filteredStudents: Student[] = [];
   searchTerm: string = '';
   blocks: string[] = ['A', 'B', 'C', 'D'];
   selectedBlock: string = '';
   allocationForm: FormGroup;
-
+selectedStudentId: number | null = null;
+  roomNo: string = '';
+  block: string = '';
+  hostelFeeAmount: number = 10000;
   constructor(
     private dataService: Dataservices,
     private fb: FormBuilder
-  ) {
+  ) { this.students = this.dataService.getStudents();
     this.allocationForm = this.fb.group({
       studentId: [''],
       roomNo: [''],
-      block: ['']
+      block: [''],
+     
     });
     
   }
@@ -48,19 +52,23 @@ export class Hostel {
     });
   }
 
-  onAllocate(): void {
-    const formValue = this.allocationForm.value;
-    const student = this.dataService.getStudentById(formValue.studentId);
-    
-    if (student) {
-      student.hostel = {
-        roomNo: formValue.roomNo,
-        block: formValue.block
-      };
-      this.dataService.updateStudent(student);
-      this.loadStudents();
-      this.allocationForm.reset();
+  allocateHostel() {
+    if (this.selectedStudentId && this.roomNo && this.block) {
+      this.dataService.allocateHostel(
+        this.selectedStudentId,
+        this.roomNo,
+        this.block,
+        this.hostelFeeAmount
+      );
+      alert('Hostel allocated successfully!');
+      this.resetForm();
     }
+  }
+
+  private resetForm() {
+    this.selectedStudentId = null;
+    this.roomNo = '';
+    this.block = '';
   }
 
   onDeallocate(student: Student): void {

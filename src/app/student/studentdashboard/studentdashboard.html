@@ -1,4 +1,3 @@
-<!-- src/app/student/studentdashboard/studentdashboard.component.html -->
 <div class="container mt-4">
   <h2>Student Dashboard</h2>
   <p>
@@ -40,28 +39,83 @@
       </div>
     </div>
   </div>
-<div class="dashboard-container" *ngIf="student">
-  <div class="card fee-summary">
-    <h3>Fee Summary</h3>
-    
-    <div class="fee-details">
-      <div class="fee-row">
-        <span class="fee-label">Total Fee:</span>
-        <span class="fee-value">₹{{ totalFee }}</span>
-      </div>
-      
-      <div class="fee-row">
-        <span class="fee-label">Amount Paid:</span>
-        <span class="fee-value paid">₹{{ amountPaid }}</span>
-      </div>
-      
-      <div class="fee-row">
-        <span class="fee-label">Amount Due:</span>
-        <span class="fee-value due">₹{{ amountDue }}</span>
+
+  <!-- Fee Summary Section -->
+   <div class="card mt-4">
+    <div class="card-header bg-dark text-white">Fee Summary</div>
+    <div class="card-body">
+      <div class="row">
+        <!-- College Fees Summary -->
+        <div class="col-md-6">
+          <h5>College Fees</h5>
+          <div class="fee-row">
+            <span class="fee-label">Total Fee:</span>
+            <span class="fee-value">₹{{ totalCollegeFee }}</span>
+          </div>
+          <div class="fee-row">
+            <span class="fee-label">Amount Paid:</span>
+            <span class="fee-value paid">₹{{ collegeAmountPaid }}</span>
+          </div>
+          <div class="fee-row">
+            <span class="fee-label">Amount Due:</span>
+            <span class="fee-value due">₹{{ collegeAmountDue }}</span>
+          </div>
+        </div>
+
+        <!-- Hostel Fees Summary -->
+        <div class="col-md-6" *ngIf="student?.hostel?.allocated">
+          <h5>Hostel Fees</h5>
+          <div class="fee-row">
+            <span class="fee-label">Total Fee:</span>
+            <span class="fee-value">₹{{ totalHostelFee }}</span>
+          </div>
+          <div class="fee-row">
+            <span class="fee-label">Amount Paid:</span>
+            <span class="fee-value paid">₹{{ hostelAmountPaid }}</span>
+          </div>
+          <div class="fee-row">
+            <span class="fee-label">Amount Due:</span>
+            <span class="fee-value due">₹{{ hostelAmountDue }}</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-</div>
+
+  <!-- College and Hostel Fees Cards -->
+  <div class="row mt-4">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header bg-primary text-white">
+          College Fees
+        </div>
+        <div class="card-body">
+          <p><strong>Status:</strong> {{ collegeFeeStatus }}</p>
+          <a routerLink="/student/fees" class="btn btn-sm btn-outline-primary" 
+             *ngIf="!collegeFeePaid">
+            Pay College Fees
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header bg-info text-white">
+          Hostel Fees
+        </div>
+        <div class="card-body">
+          <p><strong>Status:</strong> {{ hostelFeeStatus }}</p>
+          <a routerLink="/student/hostel" class="btn btn-sm btn-outline-info"
+             *ngIf="student?.hostel?.allocated && !hostelFeePaid">
+            Pay Hostel Fees
+          </a>
+          <p *ngIf="!student?.hostel?.allocated">Not allocated to hostel</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="row mt-4">
     <!-- Quick Links -->
     <div class="col-md-4">
@@ -83,11 +137,14 @@
         <div class="card-body">
           <p>You are enrolled in {{ student.courses.length }} courses this semester.</p>
           <p *ngIf="student?.hostel">
-            Your hostel room: {{ student.hostel?.block }} - {{ student.hostel?.roomNo }}
+            Your hostel room: {{ student.hostel?.block }} - {{ student.hostel?.roomNo }}<br>
+            Hostel fees: {{ student.hostel.fees.paid ? 'Paid' : 'Due (₹' + student.hostel.fees.amount + ')' }}
           </p>
           <p>
-            Fees: {{ student.fees.amount | currency: 'INR' }} 
-            ({{ student.fees.paid ? 'Paid' : 'Due' }})
+            College fees: {{ student.fees.paid ? 'Paid' : 'Due (₹' + student.fees.amount + ')' }}
+          </p>
+          <p *ngIf="lastPayment">
+            Last payment: ₹{{ lastPayment.amount }} on {{ lastPayment.date | date }}
           </p>
         </div>
       </div>

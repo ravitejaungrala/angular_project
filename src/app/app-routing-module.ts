@@ -7,6 +7,7 @@ import { AuthGuard, RoleGuardService } from './service/auth-guard';
 
 const routes: Routes = [
    { path: '', component: Login },
+    { path: 'login', component: Login },
   { 
     path: 'admin', 
     canActivate: [AuthGuard, RoleGuardService],

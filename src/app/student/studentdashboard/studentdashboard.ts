@@ -56,24 +56,38 @@ const user = storedUser ? JSON.parse(storedUser) : {};
     return this.paymentHistory[0] || null;
   }
   
-  calculateFeeSummary() {
-    if (this.student) {
-      // College Fees Calculation
-      this.collegeFeePaid = this.student.fees.paid;
-      this.collegeAmountDue = this.student.fees.amount;
-      this.collegeAmountPaid = this.totalCollegeFee - this.collegeAmountDue;
-
-      // Hostel Fees Calculation
-      if (this.student.hostel && this.student.hostel.allocated) {
-        this.isHostelAllocated = true;
-        this.totalHostelFee = this.student.hostel.fees.amount + 
-                           (this.student.hostel.fees.paid ? this.student.hostel.fees.amount : 0);
-        this.hostelFeePaid = this.student.hostel.fees.paid;
-        this.hostelAmountDue = this.student.hostel.fees.paid ? 0 : this.student.hostel.fees.amount;
-        this.hostelAmountPaid = this.totalHostelFee - this.hostelAmountDue;
-      }
+ calculateFeeSummary() {
+  if (this.student) {
+    // College Fees
+   this.totalCollegeFee = this.student.fees.totalAmount || 50000;
+    
+    const collegePayments = this.paymentHistory
+      .filter(p => p.type === 'college' && p.studentId === this.student.id)
+      .reduce((sum, p) => sum + p.amount, 0);
+    
+    this.collegeAmountPaid = collegePayments;
+    this.collegeAmountDue = this.totalCollegeFee - collegePayments;
+    this.collegeFeePaid = this.collegeAmountDue <= 0;
+    // Hostel Fees
+    if (this.student.hostel?.allocated) {
+      this.isHostelAllocated = true;
+      this.totalHostelFee = this.student.hostel.fees.totalAmount || 10000;
+      
+      const hostelPayments = this.paymentHistory
+        .filter(p => p.type === 'hostel')
+        .reduce((sum, p) => sum + p.amount, 0);
+      
+      this.hostelAmountPaid = hostelPayments;
+      this.hostelAmountDue = this.totalHostelFee - hostelPayments;
+      this.hostelFeePaid = this.hostelAmountDue <= 0;
+    } else {
+      this.isHostelAllocated = false;
+      this.totalHostelFee = 0;
+      this.hostelAmountPaid = 0;
+      this.hostelAmountDue = 0;
     }
   }
+}
    get collegeFeeStatus() {
     if (!this.student) return 'Loading...';
     return this.collegeFeePaid ? 'Fully Paid' : `Due: ₹${this.collegeAmountDue}`;

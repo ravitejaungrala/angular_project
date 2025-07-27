@@ -10,26 +10,23 @@ import { Dataservices } from '../../service/dataservices';
 export class Students {
 
 teacher!: Teacher;
-  students: Student[] = [];
-  selectedCourseId: number | null = null;
+
+ studentsByCourse: {[courseId: number]: Student[]} = {};
   courses: Course[] = [];
 
   constructor(private dataService: Dataservices) {}
 
+ 
   ngOnInit(): void {
     const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
     if (user.role === 'teacher' && user.id) {
       this.teacher = this.dataService.getTeacherById(user.id)!;
-      this.courses = this.teacher.courses
-        .map(courseId => this.dataService.getCourseById(courseId))
-        .filter(course => course) as Course[];
+      this.courses = this.dataService.getTeacherCourses(user.id);
+      
+      // Load students for all courses
+      this.courses.forEach(course => {
+        this.studentsByCourse[course.id] = this.dataService.getStudentsByCourse(course.id);
+      });
     }
-  }
-
-  onCourseSelect(): void {
-    if (!this.selectedCourseId) return;
-    
-    this.students = this.dataService.getStudents()
-      .filter(student => student.courses.includes(this.selectedCourseId!));
   }
 }

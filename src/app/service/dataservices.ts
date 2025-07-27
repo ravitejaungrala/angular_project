@@ -333,7 +333,40 @@ private departments: Department[] = [
   getStudentById(id: number): Student | undefined {
     return this.students.find(student => student.id === id);
   }
+  getStudentsByCourse(courseId: number): Student[] {
+  return this.students.filter(student => 
+    student.courses.includes(courseId)
+  );
+}
+getTeacherCourses(teacherId: number): Course[] {
+    const teacher = this.getTeacherById(teacherId);
+    if (!teacher) return [];
+    
+    return teacher.courses
+      .map(courseId => this.getCourseById(courseId))
+      .filter(course => course !== undefined) as Course[];
+  }
 
+ updateStudentMarks(studentId: number, courseId: number, mark: number): void {
+    const student = this.getStudentById(studentId);
+    if (student) {
+      // Initialize marks object if it doesn't exist
+      if (!student.marks) {
+        student.marks = {};
+      }
+      // Update the mark for the course
+      student.marks[courseId] = mark;
+      this.updateStudent(student);
+    }
+  }
+   getStudentsWithMarks(courseId: number): {student: Student, mark: number}[] {
+    return this.getStudentsByCourse(courseId).map(student => {
+      return {
+        student: student,
+        mark: student.marks?.[courseId] || 0
+      };
+    });
+  }
   getStudentsByDepartment(dept: string): Student[] {
     return this.students.filter(student => student.department === dept);
   }

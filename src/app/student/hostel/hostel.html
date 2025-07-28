@@ -1,45 +1,104 @@
-<div *ngIf="student">
-  <h2>Hostel Fees</h2>
-  
-  <div *ngIf="student.hostel?.allocated; else notAllocated">
-    <div class="hostel-info">
-      <p><strong>Room:</strong> {{ student.hostel?.block }}-{{ student.hostel?.roomNo }}</p>
-      <p><strong>Hostel Fee Due:</strong> ₹{{ student.hostel?.fees.amount }}</p>
-      <p><strong>Payment Status:</strong> 
-        <span [class.text-success]="student.hostel?.fees.paid" 
-              [class.text-danger]="!student.hostel?.fees.paid">
-          {{ student.hostel?.fees.paid ? 'Paid' : 'Due' }}
-        </span>
-      </p>
+<div class="container">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="alert alert-info text-center">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
     </div>
-
-    <div *ngIf="!student.hostel?.fees.paid" class="payment-form">
-      <div class="form-group">
-        <label>Amount to Pay</label>
-        <input type="number" [(ngModel)]="paymentAmount" 
-               [max]="student.hostel?.fees.amount"
-               min="1" placeholder="Enter amount">
-      </div>
-      <button (click)="payHostelFees()" 
-              [disabled]="!paymentAmount || paymentAmount <= 0">
-        Pay Hostel Fees
-      </button>
-    </div>
-
-    <div *ngIf="paymentDone" class="alert alert-success">
-      <p>Payment of ₹{{ lastPaymentAmount }} successful!</p>
-      <p *ngIf="student.hostel?.fees.amount > 0">
-        Remaining hostel fees: ₹{{ student.hostel?.fees.amount }}
-      </p>
-      <p *ngIf="student.hostel?.fees.paid">
-        Your hostel fees are fully paid!
-      </p>
-    </div>
+    <p class="mt-2">Loading hostel information...</p>
   </div>
 
-  <ng-template #notAllocated>
-    <div class="alert alert-info">
-      You are not currently allocated to any hostel.
+  <!-- Main Content -->
+  <div *ngIf="!isLoading && student">
+    <h2 class="mb-4">Hostel Information</h2>
+    
+    <div *ngIf="student.hostel?.allocated; else notAllocated" class="card shadow-sm">
+      <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">Your Hostel Details</h5>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <p><strong>Room Number:</strong> {{ student.hostel?.block }}-{{ student.hostel?.roomNo }}</p>
+            <p><strong>Block:</strong> {{ student.hostel?.block }}</p>
+          </div>
+          <div class="col-md-6">
+            <p><strong>Hostel Fee Status:</strong>
+              <span [class.text-success]="student.hostel?.fees.paid" 
+                    [class.text-danger]="!student.hostel?.fees.paid"
+                    class="fw-bold">
+                {{ student.hostel?.fees.paid ? 'Paid' : 'Pending' }}
+              </span>
+            </p>
+            <p><strong>Amount Due:</strong> ₹{{ student.hostel?.fees.amount || 0 }}</p>
+          </div>
+        </div>
+
+        <!-- Payment Section -->
+        <div *ngIf="!student.hostel?.fees.paid" class="mt-4 border-top pt-3">
+          <h5 class="mb-3">Pay Hostel Fees</h5>
+          
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label">Amount to Pay (₹)</label>
+                <input type="number" [(ngModel)]="paymentAmount" 
+                       class="form-control"
+                       [max]="student.hostel?.fees.amount"
+                       min="1" 
+                       placeholder="Enter amount">
+                <small class="text-muted">Maximum: ₹{{ student.hostel?.fees.amount }}</small>
+              </div>
+            </div>
+            <div class="col-md-6 d-flex align-items-end">
+              <button (click)="payHostelFees()" 
+                      [disabled]="!paymentAmount || paymentAmount <= 0 || paymentAmount > student.hostel?.fees.amount"
+                      class="btn btn-success">
+                <i class="bi bi-credit-card me-2"></i>Make Payment
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Payment Confirmation -->
+        <div *ngIf="paymentDone" class="alert alert-success mt-3">
+          <div class="d-flex align-items-center">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            <div>
+              <h5 class="alert-heading">Payment Successful!</h5>
+              <p class="mb-1">₹{{ lastPaymentAmount }} has been paid towards hostel fees.</p>
+              <p *ngIf="student.hostel?.fees.amount > 0" class="mb-1">
+                Remaining balance: ₹{{ student.hostel?.fees.amount }}
+              </p>
+              <p *ngIf="student.hostel?.fees.paid" class="mb-0">
+                Your hostel fees are fully paid!
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-  </ng-template>
+
+    <ng-template #notAllocated>
+      <div class="alert alert-warning">
+        <div class="d-flex align-items-center">
+          <i class="bi bi-exclamation-triangle-fill me-2"></i>
+          <div>
+            <h5 class="alert-heading">No Hostel Allocation</h5>
+            <p class="mb-0">You are not currently allocated to any hostel. Please contact the administration office for allocation.</p>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="!isLoading && !student" class="alert alert-danger">
+    <div class="d-flex align-items-center">
+      <i class="bi bi-exclamation-octagon-fill me-2"></i>
+      <div>
+        <h5 class="alert-heading">Error Loading Data</h5>
+        <p class="mb-0">Could not load your hostel information. Please try again later.</p>
+      </div>
+    </div>
+  </div>
 </div>

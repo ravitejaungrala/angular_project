@@ -4,84 +4,124 @@
   <div class="allocation-form">
     <div class="form-group">
       <label>Select Student</label>
-      <select [(ngModel)]="selectedStudentId" class="form-control">
+      <select [(ngModel)]="selectedStudentId" class="form-control" 
+              [class.is-invalid]="!selectedStudentId && allocationMode === 'allocate'">
         <option [value]="null">Select Student</option>
         <option *ngFor="let student of students" [value]="student.id">
           {{student.name}} (ID: {{student.id}})
         </option>
       </select>
-    </div>
-
-    <div class="form-group">
-      <label>Room Number</label>
-      <input type="text" [(ngModel)]="roomNo" class="form-control">
-    </div>
-
-    <div class="form-group">
-      <label>Block</label>
-      <input type="text" [(ngModel)]="block" class="form-control">
-    </div>
-
-    <div class="form-group">
-      <label>Hostel Fee Amount</label>
-      <input type="number" [(ngModel)]="hostelFeeAmount" class="form-control" min="1000">
-    </div>
-
-    <button (click)="allocateHostel()" 
-            [disabled]="!selectedStudentId || !roomNo || !block"
-            class="btn btn-primary">
-      Allocate Hostel
-    </button>
-  </div>
-</div>
-    
-    <div class="col-md-8">
-      <div class="card">
-        <div class="card-header bg-dark text-white">
-          Hostel Allocations
-        </div>
-        <div class="card-body">
-          <div class="row mb-3">
-            <div class="col-md-6">
-              <input type="text" class="form-control" [(ngModel)]="searchTerm" 
-                     (input)="applyFilters()" placeholder="Search by name or ID">
-            </div>
-            <div class="col-md-6">
-              <select class="form-control" [(ngModel)]="selectedBlock" (change)="applyFilters()">
-                <option value="">All Blocks</option>
-                <option *ngFor="let block of blocks" [value]="block">Block {{ block }}</option>
-              </select>
-            </div>
-          </div>
-          
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th>Student ID</th>
-                <th>Name</th>
-                <th>Department</th>
-                <th>Block</th>
-                <th>Room No</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let student of filteredStudents">
-                <td>{{ student.id }}</td>
-                <td>{{ student.name }}</td>
-                <td>{{ student.department }}</td>
-                <td>{{ student.hostel?.block || 'N/A' }}</td>
-                <td>{{ student.hostel?.roomNo || 'N/A' }}</td>
-                <td>
-                  <button *ngIf="student.hostel" class="btn btn-sm btn-danger" 
-                          (click)="onDeallocate(student)">
-                    Deallocate
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+      <div *ngIf="!selectedStudentId && allocationMode === 'allocate'" class="invalid-feedback">
+        Please select a student
       </div>
     </div>
-  
+
+    <div *ngIf="allocationMode === 'allocate'">
+      <div class="form-group">
+        <label>Room Number</label>
+        <input type="text" [(ngModel)]="roomNo" class="form-control"
+               [class.is-invalid]="!roomNo">
+        <div *ngIf="!roomNo" class="invalid-feedback">
+          Please enter room number
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Block</label>
+        <select [(ngModel)]="block" class="form-control" [class.is-invalid]="!block">
+          <option value="">Select Block</option>
+          <option *ngFor="let block of blocks" [value]="block">Block {{block}}</option>
+        </select>
+        <div *ngIf="!block" class="invalid-feedback">
+          Please select block
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Hostel Fee Amount</label>
+        <input type="number" [(ngModel)]="hostelFeeAmount" class="form-control" min="1000">
+      </div>
+
+      <button (click)="allocateHostel()" 
+              [disabled]="!selectedStudentId || !roomNo || !block"
+              class="btn btn-primary">
+        Allocate Hostel
+      </button>
+    </div>
+
+    <div *ngIf="allocationMode === 'deallocate' && selectedStudentId">
+      <div class="alert alert-warning">
+        Are you sure you want to deallocate hostel from this student?
+   <button (click)="deallocateHostel()" 
+        class="btn btn-danger"
+        [disabled]="!selectedStudentId">
+  Confirm Deallocation
+</button>
+      <button (click)="resetForm()" class="btn btn-secondary ml-2">
+        Cancel
+      </button>
+    </div>
+  </div>
+
+  <div class="col-md-8 mt-4">
+    <div class="card">
+      <div class="card-header bg-dark text-white">
+        Hostel Allocations
+      </div>
+      <div class="card-body">
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <input type="text" class="form-control" [(ngModel)]="searchTerm" 
+                   (input)="applyFilters()" placeholder="Search by name or ID">
+          </div>
+          <div class="col-md-6">
+            <select class="form-control" [(ngModel)]="selectedBlock" (change)="applyFilters()">
+              <option value="">All Blocks</option>
+              <option *ngFor="let block of blocks" [value]="block">Block {{ block }}</option>
+            </select>
+          </div>
+        </div>
+        
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Student ID</th>
+              <th>Name</th>
+              <th>Department</th>
+              <th>Block</th>
+              <th>Room No</th>
+              <th>Fees Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let student of filteredStudents">
+              <td>{{ student.id }}</td>
+              <td>{{ student.name }}</td>
+              <td>{{ student.department }}</td>
+              <td>{{ student.hostel?.block || 'N/A' }}</td>
+              <td>{{ student.hostel?.roomNo || 'N/A' }}</td>
+              <td>
+                <span *ngIf="student.hostel" [class.text-success]="student.hostel.fees.paid" 
+                      [class.text-danger]="!student.hostel.fees.paid">
+                  {{ student.hostel.fees.paid ? 'Paid' : 'Due (₹' + student.hostel.fees.amount + ')' }}
+                </span>
+                <span *ngIf="!student.hostel">N/A</span>
+              </td>
+              <td>
+                <button *ngIf="!student.hostel" class="btn btn-sm btn-primary" 
+                        (click)="setAllocationMode('allocate', student.id)">
+                  Allocate
+                </button>
+                <button *ngIf="student.hostel" class="btn btn-sm btn-danger" 
+                        (click)="setAllocationMode('deallocate', student.id)">
+                  Deallocate
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

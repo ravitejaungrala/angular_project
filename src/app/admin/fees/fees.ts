@@ -41,21 +41,18 @@ export class Fees {
   }
 
   updatePaymentStatus(student: Student, status: boolean): void {
-  // Create updated student object
   const updatedStudent = {
     ...student,
     fees: {
       ...student.fees,
       paid: status,
-      amount: status ? 0 : this.getDefaultFeeForDepartment(student.department)
+      // Keep the existing amount unless marking as unpaid
+      amount: status ? student.fees.amount : this.getDefaultFeeForDepartment(student.department)
     }
   };
 
-  // Update through service
   this.dataService.updateStudent(updatedStudent);
-
-  // Refresh local data
-  this.loadStudents();
+  this.loadStudents(); // Refresh the view
 }
  updateFeeAmount(student: Student, newAmount: number): void {
     if (newAmount >= 0) {

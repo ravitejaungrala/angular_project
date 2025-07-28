@@ -426,36 +426,6 @@ private saveStudentsToStorage(): void {
   }
 
 
-// Hostel Allocation
-allocateHostel(studentId: number, roomNo: string, block: string, hostelFeeAmount: number): void {
-  const student = this.getStudentById(studentId);
-  if (student) {
-    student.hostel = {
-      allocated: true,
-      roomNo,
-      block,
-      fees: {
-        amount: hostelFeeAmount,
-        paid: false
-      }
-    };
-    this.updateStudent(student);
-  }
-}
-
-// Hostel Fee Payment
-payHostelFees(studentId: number, amount: number): void {
-  const student = this.getStudentById(studentId);
-  if (student?.hostel) {
-    student.hostel.fees.amount -= amount;
-    if (student.hostel.fees.amount <= 0) {
-      student.hostel.fees.paid = true;
-      student.hostel.fees.amount = 0;
-    }
-    this.updateStudent(student);
-  }
-}
-
 // Update the existing updateStudent method to handle hostel fees
 updateStudent(student: Student): void {
   const index = this.students.findIndex(s => s.id === student.id);
@@ -565,4 +535,64 @@ getAttendancePercentage(studentId: number, courseId: number): number {
   const presentCount = courseAttendance.filter(a => a.status === 'present').length;
   return Math.round((presentCount / courseAttendance.length) * 100);
 }
+// In dataservices.ts
+allocateHostel(studentId: number, roomNo: string, block: string, hostelFeeAmount: number): void {
+  const student = this.getStudentById(studentId);
+  if (student) {
+    student.hostel = {
+      allocated: true,
+      roomNo,
+      block,
+      fees: {
+        amount: hostelFeeAmount,
+        paid: false
+      }
+    };
+    this.saveStudentsToStorage();
+  }
+}
+
+deallocateHostel(studentId: number): void {
+  const students = this.getStudents();
+  const student = students.find(s => s.id === studentId);
+  if (student) {
+    delete student.hostel;
+    this.saveStudentsToStorage();
+    this.triggerStorageUpdate(); // Add this line
+  }
+}
+private triggerStorageUpdate(): void {
+  const event = new StorageEvent('storage', {
+    key: 'studentsData',
+    newValue: localStorage.getItem('studentsData'),
+    oldValue: localStorage.getItem('studentsData'),
+    storageArea: localStorage,
+    url: window.location.href
+  });
+  window.dispatchEvent(event);
+}
+
+payHostelFees(studentId: number, amount: number): void {
+  const student = this.getStudentById(studentId);
+  if (student?.hostel) {
+    student.hostel.fees.amount -= amount;
+    if (student.hostel.fees.amount <= 0) {
+      student.hostel.fees.paid = true;
+      student.hostel.fees.amount = 0;
+    }
+    
+    // Update payment history
+    const paymentHistory = JSON.parse(localStorage.getItem('paymentHistory') || '[]');
+    paymentHistory.push({
+      studentId,
+      amount,
+      date: new Date().toISOString(),
+      type: 'hostel'
+    });
+    localStorage.setItem('paymentHistory', JSON.stringify(paymentHistory));
+    
+    this.saveStudentsToStorage();
+  }
+}
+
 }

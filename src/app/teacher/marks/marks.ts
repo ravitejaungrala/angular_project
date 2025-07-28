@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Dataservices } from '../../service/dataservices';
+import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-marks',
@@ -9,51 +11,61 @@ import { Dataservices } from '../../service/dataservices';
   styleUrl: './marks.css'
 })
 export class Marks {
-  
-  courses: Course[] = [];
-  selectedCourseId: number | null = null;
-
+ courses: Course[] = [];
   marksForm: FormGroup;
-  showStudentMarks = false;
-  
- teacher: Teacher | undefined;
-
+  teacher: Teacher | undefined;
   students: {student: Student, courses: Course[]}[] = [];
   editMode: {[key: string]: boolean} = {};
 
-constructor(
+  constructor(
     private dataService: Dataservices,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private router: Router
   ) {
     this.marksForm = this.fb.group({});
   }
 
-  ngOnInit(): void {
-    const userJson = localStorage.getItem('currentUser');
-    if (!userJson) return;
+   ngOnInit(): void {
+    this.loadTeacherData();
+    window.addEventListener('storage', this.handleStorageEvent.bind(this));
+  }
+
+  ngOnDestroy(): void {
+    window.removeEventListener('storage', this.handleStorageEvent.bind(this));
+  }
+
+  private handleStorageEvent(event: StorageEvent): void {
+    if (event.key === 'studentsData' || event.key === 'studentsData_refresh') {
+      console.log('Teacher detected marks update');
+      this.loadTeacherData();
+    }
+  }
+
+  loadTeacherData(): void {
+    const userJson = localStorage.getItem('teacherUser');
+    if (!userJson) {
+      this.router.navigate(['/login']);
+      return;
+    }
 
     const user = JSON.parse(userJson);
     if (user?.role === 'teacher' && user?.id) {
       this.teacher = this.dataService.getTeacherById(user.id);
       if (this.teacher) {
-        this.loadTeacherData();
+        this.loadStudentsAndCourses();
       }
     }
   }
 
-  loadTeacherData(): void {
-    if (!this.teacher) return;
+  loadStudentsAndCourses(): void {
+    this.courses = this.dataService.getTeacherCourses(this.teacher!.id);
     
-    this.courses = this.dataService.getTeacherCourses(this.teacher.id);
-    
-    // Get unique students from all courses
     const allStudents: Student[] = [];
-    this.teacher.courses.forEach(courseId => {
+    this.teacher!.courses.forEach(courseId => {
       const courseStudents = this.dataService.getStudentsByCourse(courseId);
       allStudents.push(...courseStudents);
     });
 
-    // Remove duplicates and prepare student data
     this.students = Array.from(new Set(allStudents.map(s => s.id)))
       .map(id => {
         const student = allStudents.find(s => s.id === id)!;
@@ -61,7 +73,15 @@ constructor(
         return { student, courses };
       });
 
-    // Initialize edit mode
+    this.initializeForm();
+  }
+
+  initializeForm(): void {
+    // Clear previous form controls
+    Object.keys(this.marksForm.controls).forEach(key => {
+      this.marksForm.removeControl(key);
+    });
+
     this.students.forEach(studentData => {
       studentData.courses.forEach(course => {
         const key = this.getFormKey(studentData.student.id, course.id);
@@ -82,14 +102,14 @@ constructor(
     this.editMode[key] = !this.editMode[key];
   }
 
-  saveMark(studentId: number, courseId: number): void {
+saveMark(studentId: number, courseId: number): void {
     const key = this.getFormKey(studentId, courseId);
-    if (this.marksForm.get(key)?.invalid) return;
-
     const mark = this.marksForm.get(key)?.value;
+    
+    if (mark === null || mark === undefined) return;
+
     this.dataService.updateStudentMarks(studentId, courseId, mark);
     this.editMode[key] = false;
-    alert('Mark updated successfully!');
   }
 
   getFormKey(studentId: number, courseId: number): string {
@@ -97,17 +117,17 @@ constructor(
   }
 
   getGrade(mark: number | undefined): string {
-  if (mark === undefined || mark === null) return 'N/A';
-  if (mark >= 90) return 'A+';
-  if (mark >= 80) return 'A';
-  if (mark >= 75) return 'B+';
-  if (mark >= 70) return 'B';
-  if (mark >= 65) return 'C+';
-  if (mark >= 60) return 'C';
-  if (mark >= 55) return 'D+';
-  if (mark >= 50) return 'D';
-  return 'F';
-}
+    if (mark === undefined || mark === null) return 'N/A';
+    if (mark >= 90) return 'A+';
+    if (mark >= 80) return 'A';
+    if (mark >= 75) return 'B+';
+    if (mark >= 70) return 'B';
+    if (mark >= 65) return 'C+';
+    if (mark >= 60) return 'C';
+    if (mark >= 55) return 'D+';
+    if (mark >= 50) return 'D';
+    return 'F';
+  }
 
   getTeacherCoursesForStudent(student: Student): Course[] {
     if (!this.teacher) return [];
@@ -117,8 +137,8 @@ constructor(
       .map(courseId => this.dataService.getCourseById(courseId))
       .filter(course => course !== undefined) as Course[];
   }
-getStudentMark(student: Student, courseId: number): number | undefined {
-  return student.marks?.[courseId];
-}
 
+  getStudentMark(student: Student, courseId: number): number | undefined {
+    return student.marks?.[courseId];
+  }
 }

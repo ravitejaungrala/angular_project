@@ -24,7 +24,7 @@ export class Courses {
 
 
    ngOnInit(): void {
-    const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+    const user = JSON.parse(localStorage.getItem('teacherUser') || '{}');
     if (user.role === 'teacher' && user.id) {
       this.teacher = this.dataService.getTeacherById(user.id)!;
       this.courses = this.dataService.getTeacherCourses(user.id);

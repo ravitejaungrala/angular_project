@@ -8,7 +8,7 @@ import { Dataservices } from '../../service/dataservices';
   styleUrl: './fees.css'
 })
 export class Fees {
-students: Student[] = [];
+ students: Student[] = [];
   filteredStudents: Student[] = [];
   searchTerm: string = '';
   departments: string[] = [];
@@ -40,19 +40,54 @@ students: Student[] = [];
     });
   }
 
-  
-updatePaymentStatus(student: Student, status: boolean): void {
-  student.fees.paid = status;
-  this.dataService.updateStudent(student);
+  updatePaymentStatus(student: Student, status: boolean): void {
+  // Create updated student object
+  const updatedStudent = {
+    ...student,
+    fees: {
+      ...student.fees,
+      paid: status,
+      amount: status ? 0 : this.getDefaultFeeForDepartment(student.department)
+    }
+  };
+
+  // Update through service
+  this.dataService.updateStudent(updatedStudent);
+
+  // Refresh local data
   this.loadStudents();
 }
-// src/app/admin/fees/fees.component.ts
-updateFeeAmount(student: Student, newAmount: number): void {
-  if (newAmount >= 0) {
-    student.fees.amount = newAmount;
-    student.fees.paid = newAmount === 0;
-    this.dataService.updateStudent(student);
-    this.loadStudents();
+ updateFeeAmount(student: Student, newAmount: number): void {
+    if (newAmount >= 0) {
+      // Create a new object to avoid direct mutation
+      const updatedStudent = {
+        ...student,
+        fees: {
+          ...student.fees,
+          amount: newAmount,
+          paid: newAmount === 0  // Auto-mark as paid if amount is 0
+        }
+      };
+
+      // Update through the data service
+      this.dataService.updateStudent(updatedStudent);
+      
+      // Refresh the filtered students
+      this.applyFilters();
+    } else {
+      console.warn('Fee amount cannot be negative');
+    }
   }
+private getDefaultFeeForDepartment(dept: string): number {
+  const feesMap: Record<string, number> = {
+    'CSE': 50000,
+    'AIML': 55000,
+    'IT': 52000,
+    'ECE': 48000,
+    'EEE': 45000,
+    'MECH': 40000,
+    'CIVIL': 38000
+  };
+  return feesMap[dept] || 50000;
 }
 }

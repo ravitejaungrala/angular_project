@@ -28,7 +28,7 @@ export class Studentdashboard {
   constructor(private dataService: Dataservices) {}
 
   ngOnInit(): void {
-   const storedUser = localStorage.getItem('currentUser');
+   const storedUser = localStorage.getItem('studentUser');
 const user = storedUser ? JSON.parse(storedUser) : {};
 
    

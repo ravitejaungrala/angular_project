@@ -12,7 +12,7 @@
             No students found in your courses.
           </div>
           
-          <form [formGroup]="marksForm" *ngIf="students.length > 0">
+          <form [formGroup]="marksForm">
             <table class="table table-striped table-hover">
               <thead class="thead-dark">
                 <tr>
@@ -46,22 +46,20 @@
                       </ng-template>
                     </td>
                     <td>
-                     <td>
-  <span class="badge" 
-        [ngClass]="{
-          'badge-success': getGrade(getStudentMark(studentData.student, course.id)) === 'A+' || 
-                          getGrade(getStudentMark(studentData.student, course.id)) === 'A',
-          'badge-primary': getGrade(getStudentMark(studentData.student, course.id)) === 'B+' || 
-                          getGrade(getStudentMark(studentData.student, course.id)) === 'B',
-          'badge-warning': getGrade(getStudentMark(studentData.student, course.id)) === 'C+' || 
-                          getGrade(getStudentMark(studentData.student, course.id)) === 'C',
-          'badge-danger': getGrade(getStudentMark(studentData.student, course.id)) === 'D+' || 
-                         getGrade(getStudentMark(studentData.student, course.id)) === 'D' ||
-                         getGrade(getStudentMark(studentData.student, course.id)) === 'F'
-        }">
-    {{ getGrade(getStudentMark(studentData.student, course.id)) }}
-  </span>
-
+                      <span class="badge" 
+                            [ngClass]="{
+                              'badge-success': getGrade(getStudentMark(studentData.student, course.id)) === 'A+' || 
+                                              getGrade(getStudentMark(studentData.student, course.id)) === 'A',
+                              'badge-primary': getGrade(getStudentMark(studentData.student, course.id)) === 'B+' || 
+                                              getGrade(getStudentMark(studentData.student, course.id)) === 'B',
+                              'badge-warning': getGrade(getStudentMark(studentData.student, course.id)) === 'C+' || 
+                                              getGrade(getStudentMark(studentData.student, course.id)) === 'C',
+                              'badge-danger': getGrade(getStudentMark(studentData.student, course.id)) === 'D+' || 
+                                             getGrade(getStudentMark(studentData.student, course.id)) === 'D' ||
+                                             getGrade(getStudentMark(studentData.student, course.id)) === 'F'
+                            }">
+                        {{ getGrade(getStudentMark(studentData.student, course.id)) }}
+                      </span>
                     </td>
                     <td>
                       <button *ngIf="!editMode[getFormKey(studentData.student.id, course.id)]" 
@@ -71,7 +69,8 @@
                       </button>
                       <div *ngIf="editMode[getFormKey(studentData.student.id, course.id)]">
                         <button class="btn btn-sm btn-success mr-2"
-                                (click)="saveMark(studentData.student.id, course.id)">
+                                (click)="saveMark(studentData.student.id, course.id)"
+                                [disabled]="marksForm.get(getFormKey(studentData.student.id, course.id))?.invalid">
                           <i class="fas fa-save"></i> Save
                         </button>
                         <button class="btn btn-sm btn-secondary"

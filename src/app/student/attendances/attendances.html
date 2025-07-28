@@ -1,0 +1,81 @@
+<div class="container mt-4">
+  <h2>My Attendance</h2>
+  
+  <div class="card mt-3">
+    <div class="card-header">
+      <h5>Attendance Summary</h5>
+    </div>
+    <div class="card-body">
+      <div *ngIf="attendanceSummary.length === 0" class="alert alert-info">
+        No attendance records found.
+      </div>
+      
+      <table *ngIf="attendanceSummary.length > 0" class="table table-striped">
+        <thead>
+          <tr>
+            <th>Course</th>
+            <th>Classes Attended</th>
+            <th>Total Classes</th>
+            <th>Percentage</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let summary of attendanceSummary">
+            <td>{{summary.courseName}}</td>
+            <td>{{summary.presentClasses}}</td>
+            <td>{{summary.totalClasses}}</td>
+            <td>
+              <div class="progress">
+                <div class="progress-bar" 
+                     [ngClass]="{
+                       'bg-success': summary.percentage >= 75,
+                       'bg-warning': summary.percentage >= 50 && summary.percentage < 75,
+                       'bg-danger': summary.percentage < 50
+                     }" 
+                     [style.width.%]="summary.percentage">
+                </div>
+              </div>
+              {{summary.percentage}}%
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card mt-3">
+    <div class="card-header">
+      <h5>Detailed Attendance Records</h5>
+    </div>
+    <div class="card-body">
+      <div *ngIf="attendanceRecords.length === 0" class="alert alert-info">
+        No detailed attendance records available.
+      </div>
+      
+      <table *ngIf="attendanceRecords.length > 0" class="table table-striped">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Course</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let record of attendanceRecords">
+            <td>{{record.date | date:'mediumDate'}}</td>
+            <td>{{getCourseName(record.courseId)}}</td>
+            <td>
+              <span [ngClass]="{
+                'badge bg-success': record.status === 'present',
+                'badge bg-danger': record.status === 'absent',
+                'badge bg-warning': record.status === 'late'
+              }">
+                {{record.status | titlecase}}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

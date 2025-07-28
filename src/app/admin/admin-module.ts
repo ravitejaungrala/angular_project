@@ -13,6 +13,7 @@ import { Dataservices } from '../service/dataservices';
 import { RouterModule, Routes } from '@angular/router';
 import { Adminnavbar } from './adminnavbar/adminnavbar';
 import { AdminRoutingModule } from '../admin-routing.module';
+import { Attendances } from './attendances/attendances';
 
 
 
@@ -26,7 +27,8 @@ import { AdminRoutingModule } from '../admin-routing.module';
     Marks,
     Fees,
     Hostel,
-    Adminnavbar
+    Adminnavbar,
+    Attendances
   ],
   imports: [
     CommonModule,

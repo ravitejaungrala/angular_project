@@ -16,6 +16,7 @@ interface Student {
       paid: boolean;
     };
   };
+  attendance?: AttendanceRecord[];
 }
 
 interface Teacher {
@@ -32,7 +33,9 @@ interface Course {
   department: string;
   year: number;
   credits: number;
+   attendanceRecords?: { [date: string]: AttendanceRecord[] };
 }
+
 
 interface Department {
   id: number;
@@ -46,3 +49,11 @@ interface User {
   password: string;
   id?: number;
 }
+// Add to your existing interfaces
+interface AttendanceRecord {
+  date: string;
+  status: 'present' | 'absent' | 'late';
+  courseId: number;
+   studentId: number; 
+}
+

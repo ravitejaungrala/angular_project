@@ -10,6 +10,7 @@ import { Dataservices } from '../service/dataservices';
 import { Teachernavbar } from './teachernavbar/teachernavbar';
 import { AdminRoutingModule } from '../admin-routing.module';
 import { TeacherRoutingModule } from '../teacher-routing.module';
+import { Attendances } from './attendances/attendances';
 
 
 
@@ -19,7 +20,8 @@ import { TeacherRoutingModule } from '../teacher-routing.module';
     Courses,
     Students,
     Marks,
-    Teachernavbar
+    Teachernavbar,
+    Attendances
   ],
  imports: [
      CommonModule,

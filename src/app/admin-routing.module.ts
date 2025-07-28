@@ -9,6 +9,7 @@ import { Departments } from './admin/departments/departments';
 import { Marks } from './admin/marks/marks';
 import { Fees } from './admin/fees/fees';
 import { Hostel } from './admin/hostel/hostel';
+import { Attendances } from './admin/attendances/attendances';
 const routes: Routes = [
   { 
     path: '', 
@@ -22,6 +23,7 @@ const routes: Routes = [
            { path: 'marks', component: Marks},
            { path: 'fees', component: Fees },
            { path: 'hostel', component: Hostel },
+           {path:'attendances',component:Attendances},
       { path: '', redirectTo: 'users', pathMatch: 'full' }
     ]
   }

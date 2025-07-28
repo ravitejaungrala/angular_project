@@ -18,7 +18,7 @@ export class Teacherdashboard {
   constructor(private dataService: Dataservices) {}
 
   ngOnInit(): void {
-   const storedUser = localStorage.getItem('currentUser');
+   const storedUser = localStorage.getItem('teacherUser');
 const user = storedUser ? JSON.parse(storedUser) : {};
 
     if (user.role === 'teacher' && user.id) {

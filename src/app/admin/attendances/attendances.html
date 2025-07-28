@@ -1,0 +1,67 @@
+<div class="container mt-4">
+  <h2>Attendance Management</h2>
+  
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <label class="form-label">Select Course</label>
+      <select class="form-select" (change)="onCourseChange()" [(ngModel)]="selectedCourse">
+        <option *ngFor="let course of courses" [ngValue]="course">
+          {{course.name}} ({{course.department}})
+        </option>
+      </select>
+    </div>
+    <div class="col-md-6">
+      <label class="form-label">Date</label>
+      <input type="date" class="form-control" [(ngModel)]="attendanceDate" (change)="onDateChange()">
+    </div>
+  </div>
+
+  <div *ngIf="selectedCourse" class="card mt-3">
+    <div class="card-header">
+      <h5>Attendance for {{selectedCourse.name}} on {{attendanceDate}}</h5>
+    </div>
+    <div class="card-body">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Student ID</th>
+            <th>Name</th>
+            <th>Department</th>
+            <th>Year</th>
+            <th>Attendance %</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let student of students">
+            <td>{{student.id}}</td>
+            <td>{{student.name}}</td>
+            <td>{{student.department}}</td>
+            <td>{{student.year}}</td>
+            <td>
+              <div class="progress">
+                <div class="progress-bar" 
+                     [ngClass]="{
+                       'bg-success': student.attendancePercentage >= 75,
+                       'bg-warning': student.attendancePercentage >= 50 && student.attendancePercentage < 75,
+                       'bg-danger': student.attendancePercentage < 50
+                     }" 
+                     [style.width.%]="student.attendancePercentage">
+                </div>
+              </div>
+              {{student.attendancePercentage}}%
+            </td>
+            <td>
+              <select class="form-select form-select-sm" [(ngModel)]="student.attendanceStatus">
+                <option value="present">Present</option>
+                <option value="absent">Absent</option>
+                <option value="late">Late</option>
+              </select>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <button class="btn btn-primary" (click)="submitAttendance()">Save Attendance</button>
+    </div>
+  </div>
+</div>

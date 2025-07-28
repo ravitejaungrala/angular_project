@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { Login } from './components/login/login';
-import { AuthGuard, RoleGuardService } from './service/auth-guard';
-
-
+import { AuthGuard } from './service/auth-guard'; // Assuming you have this
+import { RoleGuardService } from './service/auth-guard';
 
 const routes: Routes = [
-   { path: '', component: Login },
-    { path: 'login', component: Login },
+  { path: '', component: Login },
+  { path: 'login', component: Login },
+
   { 
     path: 'admin', 
     canActivate: [AuthGuard, RoleGuardService],
@@ -26,6 +26,7 @@ const routes: Routes = [
     data: { role: 'student' },
     loadChildren: () => import('./student/student-module').then(m => m.StudentModule)
   },
+
   { path: '**', redirectTo: '' }
 ];
 

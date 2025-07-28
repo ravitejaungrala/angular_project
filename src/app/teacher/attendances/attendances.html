@@ -1,0 +1,66 @@
+<div class="container mt-4">
+  <h2>Teacher Attendance Management</h2>
+  
+  <div class="row mb-3">
+    <div class="col-md-12">
+      <label class="form-label">Date</label>
+      <input type="date" class="form-control" [(ngModel)]="attendanceDate" (change)="onDateChange()">
+    </div>
+  </div>
+
+  <div *ngFor="let course of courses" class="card mt-3">
+    <div class="card-header">
+      <h5>Attendance for {{course.name}} on {{attendanceDate | date:'mediumDate'}}</h5>
+    </div>
+    <div class="card-body">
+      <div *ngIf="!studentsByCourse[course.id]?.length" class="alert alert-info">
+        No students enrolled in this course.
+      </div>
+      
+      <table *ngIf="studentsByCourse[course.id]?.length" class="table table-striped">
+        <thead>
+          <tr>
+            <th>Student ID</th>
+            <th>Name</th>
+            <th>Department</th>
+            <th>Year</th>
+            <th>Attendance %</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let student of studentsByCourse[course.id]">
+            <td>{{student.id}}</td>
+            <td>{{student.name}}</td>
+            <td>{{student.department}}</td>
+            <td>{{student.year}}</td>
+            <td>
+              <div class="progress">
+                <div class="progress-bar" 
+                     [ngClass]="{
+                       'bg-success': student.attendancePercentage >= 75,
+                       'bg-warning': student.attendancePercentage >= 50 && student.attendancePercentage < 75,
+                       'bg-danger': student.attendancePercentage < 50
+                     }" 
+                     [style.width.%]="student.attendancePercentage">
+                </div>
+              </div>
+              {{student.attendancePercentage}}%
+            </td>
+            <td>
+              <select class="form-select form-select-sm" [(ngModel)]="student.attendanceStatus">
+                <option value="present">Present</option>
+                <option value="absent">Absent</option>
+                <option value="late">Late</option>
+              </select>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="mt-3">
+    <button class="btn btn-primary" (click)="submitAttendance()">Save All Attendance</button>
+  </div>
+</div>

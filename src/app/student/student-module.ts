@@ -10,6 +10,7 @@ import { Dataservices } from '../service/dataservices';
 import { FormsModule } from '@angular/forms';
 import { Studentnavbar } from './studentnavbar/studentnavbar';
 import { StudentRoutingModule } from '../student-routing.module';
+import { Attendances } from './attendances/attendances';
 
 
 
@@ -20,7 +21,8 @@ import { StudentRoutingModule } from '../student-routing.module';
     Mark,
     Fees,
     Hostel,
-    Studentnavbar
+    Studentnavbar,
+    Attendances
   ],
   imports: [
     CommonModule,

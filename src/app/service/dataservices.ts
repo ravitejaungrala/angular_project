@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -243,8 +244,14 @@ private departments: Department[] = [
     { id: 40, name: 'Nora Kelly', email: 'nora@student.edu', department: 'ECE', year: 4, 
       courses: [407, 408, 409, 410], marks: {407: 79, 408: 84, 409: 81, 410: 76}, fees: {amount: 48000, paid: true} }
   ];
-  constructor() { }
+  constructor() {this.loadStudentsFromStorage(); }
 
+  private loadStudentsFromStorage(): void {
+    const storedData = localStorage.getItem('studentsData');
+    if (storedData) {
+      this.students = JSON.parse(storedData);
+    }
+  }
   // Department methods
   getDepartments(): Department[] {
     return this.departments;
@@ -346,18 +353,51 @@ getTeacherCourses(teacherId: number): Course[] {
       .map(courseId => this.getCourseById(courseId))
       .filter(course => course !== undefined) as Course[];
   }
-
  updateStudentMarks(studentId: number, courseId: number, mark: number): void {
-    const student = this.getStudentById(studentId);
-    if (student) {
-      // Initialize marks object if it doesn't exist
-      if (!student.marks) {
-        student.marks = {};
+    // Get current data from localStorage with proper typing
+    const storedStudents = localStorage.getItem('studentsData');
+    let students: Student[] = storedStudents ? JSON.parse(storedStudents) : this.students;
+
+    // Update the specific student's marks
+    const studentIndex = students.findIndex((s: Student) => s.id === studentId);
+    if (studentIndex !== -1) {
+      if (!students[studentIndex].marks) {
+        students[studentIndex].marks = {};
       }
-      // Update the mark for the course
-      student.marks[courseId] = mark;
-      this.updateStudent(student);
+      students[studentIndex].marks[courseId] = mark;
+
+      // Save back to localStorage
+      localStorage.setItem('studentsData', JSON.stringify(students));
+
+      // Update service's local copy
+      this.students = students;
+
+      // Trigger storage event to notify all tabs
+      this.triggerStorageEvent();
     }
+  }
+private saveStudentsToStorage(): void {
+  localStorage.setItem('studentsData', JSON.stringify(this.students));
+  // Additional write to ensure change detection
+  localStorage.setItem('studentsData_timestamp', Date.now().toString());
+}
+
+
+  private triggerStorageEvent(): void {
+    // Create and dispatch a proper storage event
+    const event = new StorageEvent('storage', {
+      key: 'studentsData',
+      newValue: localStorage.getItem('studentsData'),
+      oldValue: localStorage.getItem('studentsData'),
+      storageArea: localStorage,
+      url: window.location.href
+    });
+    window.dispatchEvent(event);
+
+    // Force update for all components
+    setTimeout(() => {
+      localStorage.setItem('studentsData_refresh', Date.now().toString());
+    }, 100);
   }
    getStudentsWithMarks(courseId: number): {student: Student, mark: number}[] {
     return this.getStudentsByCourse(courseId).map(student => {
@@ -385,47 +425,6 @@ getTeacherCourses(teacherId: number): Course[] {
     this.students = this.students.filter(student => student.id !== id);
   }
 
-
-//   // Add to Dataservices class
-// private payments: Payment[] = [];
-
-// // Add these methods to Dataservices
-// getHostelFee(): number {
-//   return 20000; // Default hostel fee
-// }
-
-// getPaymentsByStudent(studentId: number): Payment[] {
-//   return this.payments.filter(p => p.studentId === studentId);
-// }
-
-// addPayment(payment: Payment): void {
-//   this.payments.push(payment);
-//   const student = this.getStudentById(payment.studentId);
-//   if (student) {
-//     if (payment.type === 'hostel' && student.hostel) {
-//       student.fees.hostel = student.fees.hostel || { amount: this.getHostelFee(), paid: false };
-//       student.fees.hostel.amount -= payment.amount;
-//       if (student.fees.hostel.amount <= 0) {
-//         student.fees.hostel.paid = true;
-//         student.fees.hostel.amount = 0;
-//       }
-//     }
-//     this.updateStudent(student);
-//   }
-// }
-// users = [
-//     { username: 'admin@gmail.com', password: 'admin123', role: 'admin' },
-//     { username: 'teacher@gmail.com', password: 'teacher123', role: 'teacher' },
-//     { username: 'student@gmail.com', password: 'student123', role: 'student' }
-//   ];
-
-//   validateUser(username: string, password: string) {
-//     return this.users.find(
-//       (user) => user.username === username && user.password === password
-//     );
-//   }
- // In src/app/services/data.service.ts
- // Add these methods to your DataService class
 
 // Hostel Allocation
 allocateHostel(studentId: number, roomNo: string, block: string, hostelFeeAmount: number): void {
@@ -501,6 +500,69 @@ validateUser(username: string, password: string): { role: string, id?: number } 
   console.log('No valid user found'); // Debug log
   return null;
 }
+// Add these methods to your Dataservices class
 
+// Get attendance for a student
+getStudentAttendance(studentId: number): AttendanceRecord[] {
+  const student = this.getStudentById(studentId);
+  return student?.attendance || [];
 }
 
+// Get attendance for a course on a specific date
+getCourseAttendance(courseId: number, date: string): AttendanceRecord[] {
+  const course = this.getCourseById(courseId);
+  return course?.attendanceRecords?.[date] || [];
+}
+// Update the markAttendance method to include studentId in the records
+markAttendance(courseId: number, date: string, attendanceData: {studentId: number, status: 'present' | 'absent' | 'late'}[]): void {
+  // Update course attendance records
+  const course = this.getCourseById(courseId);
+  if (!course) return;
+
+  if (!course.attendanceRecords) {
+    course.attendanceRecords = {};
+  }
+  
+  // Include studentId in the course attendance records
+  course.attendanceRecords[date] = attendanceData.map(data => ({
+    studentId: data.studentId, // Add this line
+    date,
+    status: data.status,
+    courseId
+  }));
+
+  // Update each student's attendance record
+  attendanceData.forEach(data => {
+    const student = this.getStudentById(data.studentId);
+    if (student) {
+      if (!student.attendance) {
+        student.attendance = [];
+      }
+      
+      // Remove existing record for this date/course if it exists
+      student.attendance = student.attendance.filter(
+        record => !(record.date === date && record.courseId === courseId)
+      );
+      
+      // Add new record with studentId
+      student.attendance.push({
+        studentId: data.studentId, // Add this line
+        date,
+        status: data.status,
+        courseId
+      });
+    }
+  });
+}
+// Get attendance percentage for a student in a course
+getAttendancePercentage(studentId: number, courseId: number): number {
+  const student = this.getStudentById(studentId);
+  if (!student?.attendance) return 0;
+  
+  const courseAttendance = student.attendance.filter(a => a.courseId === courseId);
+  if (courseAttendance.length === 0) return 0;
+  
+  const presentCount = courseAttendance.filter(a => a.status === 'present').length;
+  return Math.round((presentCount / courseAttendance.length) * 100);
+}
+}

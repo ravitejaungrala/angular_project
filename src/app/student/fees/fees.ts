@@ -17,7 +17,7 @@ export class Fees {
   amountPaid: number = 0;
 
   constructor(private dataService: Dataservices) {
-    const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+    const user = JSON.parse(localStorage.getItem('studentUser') || '{}');
     if (user.role === 'student' && user.id) {
       this.student = this.dataService.getStudentById(user.id);
       this.calculateFeeSummary();

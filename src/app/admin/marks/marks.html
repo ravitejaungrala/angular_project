@@ -12,7 +12,7 @@
             No students found.
           </div>
           
-          <form [formGroup]="marksForm" (ngSubmit)="onSubmitMarks()" *ngIf="students.length > 0">
+          <form [formGroup]="marksForm" *ngIf="students.length > 0">
             <table class="table table-striped table-bordered">
               <thead class="thead-dark">
                 <tr>
@@ -23,6 +23,7 @@
                   <th>Course</th>
                   <th>Marks (0-100)</th>
                   <th>Grade</th>
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -38,10 +39,15 @@
                   </td>
                   <td>
                     <div *ngFor="let course of getStudentCourses(student)">
-                      <input type="number" min="0" max="100" class="form-control" 
-                            [formControlName]="'student_' + student.id + '_course_' + course.id"
-                            [class.is-invalid]="marksForm.get('student_' + student.id + '_course_' + course.id)?.invalid && 
-                                               marksForm.get('student_' + student.id + '_course_' + course.id)?.touched">
+                      <div *ngIf="editMode[getFormKey(student.id, course.id)]; else viewMode">
+                        <input type="number" min="0" max="100" class="form-control" 
+                              [formControlName]="getFormKey(student.id, course.id)"
+                              [class.is-invalid]="marksForm.get(getFormKey(student.id, course.id))?.invalid && 
+                                                 marksForm.get(getFormKey(student.id, course.id))?.touched">
+                      </div>
+                      <ng-template #viewMode>
+                        {{ student.marks?.[course.id] || 'Not set' }}
+                      </ng-template>
                     </div>
                   </td>
                   <td>
@@ -62,14 +68,29 @@
                       </span>
                     </div>
                   </td>
+                  <td>
+                    <div *ngFor="let course of getStudentCourses(student)">
+                      <button *ngIf="!editMode[getFormKey(student.id, course.id)]" 
+                              class="btn btn-sm btn-primary"
+                              (click)="toggleEdit(student.id, course.id)">
+                        <i class="fas fa-edit"></i> Edit
+                      </button>
+                      <div *ngIf="editMode[getFormKey(student.id, course.id)]">
+                        <button class="btn btn-sm btn-success mr-2"
+                                (click)="saveMark(student.id, course.id)"
+                                [disabled]="marksForm.get(getFormKey(student.id, course.id))?.invalid">
+                          <i class="fas fa-save"></i> Save
+                        </button>
+                        <button class="btn btn-sm btn-secondary"
+                                (click)="toggleEdit(student.id, course.id)">
+                          <i class="fas fa-times"></i> Cancel
+                        </button>
+                      </div>
+                    </div>
+                  </td>
                 </tr>
               </tbody>
             </table>
-            <div class="text-right mt-3">
-              <button type="submit" class="btn btn-success" [disabled]="marksForm.invalid">
-                <i class="fas fa-save"></i> Update All Marks
-              </button>
-            </div>
           </form>
         </div>
       </div>

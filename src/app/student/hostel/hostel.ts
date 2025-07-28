@@ -20,7 +20,7 @@ export class Hostel {
   }
 
   loadStudentData() {
-    const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+    const user = JSON.parse(localStorage.getItem('studentUser') || '{}');
     if (user.role === 'student' && user.id) {
       this.student = this.dataService.getStudentById(user.id);
     }

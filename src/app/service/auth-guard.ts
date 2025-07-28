@@ -1,64 +1,77 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
-
-import { Dataservices } from './dataservices'
+import { Dataservices } from './dataservices';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthGuard implements CanActivate {
-  constructor(
-    private router: Router,
-    private dataService: Dataservices
-  ) {}
+  constructor(private router: Router, private dataService: Dataservices) {}
 
   canActivate(): boolean {
-    const userJson = localStorage.getItem('currentUser');
-    if (!userJson) {
+    const adminUserJson = localStorage.getItem('adminUser');
+    const teacherUserJson = localStorage.getItem('teacherUser');
+    const studentUserJson = localStorage.getItem('studentUser');
+
+    let user: any = null;
+
+    if (adminUserJson) {
+      user = JSON.parse(adminUserJson);
+    } else if (teacherUserJson) {
+      user = JSON.parse(teacherUserJson);
+      if (!this.dataService.getTeacherById(user.id)) {
+        localStorage.removeItem('teacherUser');
+        this.router.navigate(['/']);
+        return false;
+      }
+    } else if (studentUserJson) {
+      user = JSON.parse(studentUserJson);
+      if (!this.dataService.getStudentById(user.id)) {
+        localStorage.removeItem('studentUser');
+        this.router.navigate(['/']);
+        return false;
+      }
+    } else {
       this.router.navigate(['/']);
       return false;
-    }
-
-    const user = JSON.parse(userJson);
-    // Verify the user still exists in our data service
-    if (user.role === 'teacher' && user.id) {
-      if (!this.dataService.getTeacherById(user.id)) {
-        localStorage.removeItem('currentUser');
-        this.router.navigate(['/']);
-        return false;
-      }
-    } else if (user.role === 'student' && user.id) {
-      if (!this.dataService.getStudentById(user.id)) {
-        localStorage.removeItem('currentUser');
-        this.router.navigate(['/']);
-        return false;
-      }
     }
 
     return true;
   }
 }
-// Role-based auth guard
+
 @Injectable({
   providedIn: 'root'
 })
 export class RoleGuardService implements CanActivate {
   constructor(private router: Router) {}
 
- canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-  const userJson = localStorage.getItem('currentUser');
-  const user: User | null = userJson ? JSON.parse(userJson) : null;
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+    const expectedRole = route.data['role'];
+    let userJson = '';
 
-  if (!user || !user.role) {
-    this.router.navigate(['/']);
-    return false;
+    switch (expectedRole) {
+      case 'admin':
+        userJson = localStorage.getItem('adminUser') || '';
+        break;
+      case 'teacher':
+        userJson = localStorage.getItem('teacherUser') || '';
+        break;
+      case 'student':
+        userJson = localStorage.getItem('studentUser') || '';
+        break;
+      default:
+        this.router.navigate(['/']);
+        return false;
+    }
+
+    const user = userJson ? JSON.parse(userJson) : null;
+
+    if (!user || user.role !== expectedRole) {
+      this.router.navigate(['/']);
+      return false;
+    }
+
+    return true;
   }
-
-  if (route.data['role'] && route.data['role'] !== user.role) {
-    this.router.navigate(['/']);
-    return false;
-  }
-
-  return true;
-}
 }

@@ -1,4 +1,3 @@
-<!-- src/app/admin/students/students.component.html -->
 <div class="container mt-4">
   <h2>Student Management</h2>
   
@@ -12,33 +11,48 @@
           <form [formGroup]="studentForm" (ngSubmit)="onSubmit()">
             <div class="form-group">
               <label>Name</label>
-              <input type="text" class="form-control" formControlName="name">
+              <input type="text" class="form-control" formControlName="name" required>
+              <div *ngIf="studentForm.get('name')?.invalid && studentForm.get('name')?.touched" class="text-danger">
+                Name is required
+              </div>
             </div>
             
             <div class="form-group">
               <label>Email</label>
-              <input type="email" class="form-control" formControlName="email">
+              <input type="email" class="form-control" formControlName="email" required>
+              <div *ngIf="studentForm.get('email')?.invalid && studentForm.get('email')?.touched" class="text-danger">
+                Valid email is required
+              </div>
             </div>
             
             <div class="form-group">
               <label>Department</label>
-              <select class="form-control" formControlName="department">
+              <select class="form-control" formControlName="department" required>
                 <option value="">Select Department</option>
                 <option *ngFor="let dept of departments" [value]="dept">{{ dept }}</option>
               </select>
+              <div *ngIf="studentForm.get('department')?.invalid && studentForm.get('department')?.touched" class="text-danger">
+                Department is required
+              </div>
             </div>
             
             <div class="form-group">
               <label>Year</label>
-              <select class="form-control" formControlName="year">
+              <select class="form-control" formControlName="year" required>
                 <option value="">Select Year</option>
                 <option *ngFor="let year of years" [value]="year">{{ year }}</option>
               </select>
+              <div *ngIf="studentForm.get('year')?.invalid && studentForm.get('year')?.touched" class="text-danger">
+                Year is required
+              </div>
             </div>
             
             <div class="form-group">
               <label>Fees Amount</label>
-              <input type="number" class="form-control" formControlName="feesAmount">
+              <input type="number" class="form-control" formControlName="feesAmount" required min="0">
+              <div *ngIf="studentForm.get('feesAmount')?.invalid && studentForm.get('feesAmount')?.touched" class="text-danger">
+                Valid fee amount is required
+              </div>
             </div>
             
             <div class="form-check mb-3">
@@ -46,10 +60,9 @@
               <label class="form-check-label">Fees Paid</label>
             </div>
             
-           <!-- Hostel Allocation -->
             <div class="form-check mb-3">
               <input type="checkbox" class="form-check-input" formControlName="hostelAllocated"
-                     (change)="onHostelAllocationChange(studentForm.get('hostelAllocated')?.value)">
+                     (change)="onHostelAllocationChange($event.target.checked)">
               <label class="form-check-label">Hostel Allocated</label>
             </div>
             
@@ -57,16 +70,25 @@
               <div class="form-group">
                 <label>Hostel Room No</label>
                 <input type="text" class="form-control" formControlName="hostelRoom">
+                <div *ngIf="studentForm.get('hostelRoom')?.invalid && studentForm.get('hostelRoom')?.touched" class="text-danger">
+                  Room number is required
+                </div>
               </div>
               
               <div class="form-group">
                 <label>Hostel Block</label>
                 <input type="text" class="form-control" formControlName="hostelBlock">
+                <div *ngIf="studentForm.get('hostelBlock')?.invalid && studentForm.get('hostelBlock')?.touched" class="text-danger">
+                  Block is required
+                </div>
               </div>
               
               <div class="form-group">
                 <label>Hostel Fees Amount</label>
                 <input type="number" class="form-control" formControlName="hostelFeesAmount" min="0">
+                <div *ngIf="studentForm.get('hostelFeesAmount')?.invalid && studentForm.get('hostelFeesAmount')?.touched" class="text-danger">
+                  Valid fee amount is required
+                </div>
               </div>
               
               <div class="form-check mb-3">
@@ -75,6 +97,34 @@
               </div>
             </div>
             
+            <div class="form-group">
+              <label>Assign Courses (Minimum 2 required)</label>
+              <select multiple class="form-control" formControlName="courses" 
+                      (change)="onCourseSelectionChange($event)"
+                      [class.is-invalid]="studentForm.get('courses')?.invalid && studentForm.get('courses')?.touched">
+                <option *ngFor="let course of availableCourses" 
+                        [value]="course.id">
+                  {{course.name}} (Year {{course.year}} - {{course.credits}} credits)
+                </option>
+              </select>
+              <small class="text-muted">Hold Ctrl to select multiple courses (minimum 2)</small>
+              <div *ngIf="studentForm.get('courses')?.invalid && studentForm.get('courses')?.touched" class="invalid-feedback">
+                <div *ngIf="studentForm.get('courses')?.errors?.['required']" class="text-danger">
+                  At least 2 courses are required
+                </div>
+                <div *ngIf="studentForm.get('courses')?.errors?.['minLength']" class="text-danger">
+                  Please select at least 2 courses
+                </div>
+              </div>
+              <div *ngIf="selectedCourses.length > 0" class="mt-2">
+                <strong>Selected Courses ({{selectedCourses.length}}):</strong>
+                <ul>
+                  <li *ngFor="let courseId of selectedCourses">
+                    {{ getCourseName(courseId) }}
+                  </li>
+                </ul>
+              </div>
+            </div>
             
             <button type="submit" class="btn btn-primary mr-2" [disabled]="studentForm.invalid">
               {{ isEditing ? 'Update' : 'Add' }}
@@ -85,7 +135,7 @@
       </div>
     </div>
     
-   <div class="col-md-8">
+    <div class="col-md-8">
       <div class="card">
         <div class="card-header bg-dark text-white">
           Student List
@@ -98,6 +148,7 @@
                 <th>Name</th>
                 <th>Department</th>
                 <th>Year</th>
+                <th>Courses</th>
                 <th>College Fees</th>
                 <th>Hostel</th>
                 <th>Actions</th>
@@ -110,6 +161,11 @@
                 <td>{{ student.department }}</td>
                 <td>{{ student.year }}</td>
                 <td>
+                  <span *ngFor="let courseId of student.courses">
+                    {{ getCourseName(courseId) }}<br>
+                  </span>
+                </td>
+                <td>
                   {{ student.fees.amount | currency:'INR' }}
                   <span class="badge" [ngClass]="student.fees.paid ? 'badge-success' : 'badge-danger'">
                     {{ student.fees.paid ? 'Paid' : 'Due' }}
@@ -118,11 +174,9 @@
                 <td>
                   <span *ngIf="student.hostel?.allocated; else noHostel">
                     {{ student.hostel?.block }}-{{ student.hostel?.roomNo }}
-                   <span class="badge"
-      [ngClass]="student.hostel?.fees?.paid ? 'badge-success' : 'badge-danger'">
-  {{ student.hostel?.fees?.paid ? 'Paid' : 'Due' }}
-</span>
-
+                    <span class="badge" [ngClass]="student.hostel?.fees?.paid ? 'badge-success' : 'badge-danger'">
+                      {{ student.hostel?.fees?.paid ? 'Paid' : 'Due' }}
+                    </span>
                   </span>
                   <ng-template #noHostel>
                     <span class="text-muted">Not allocated</span>
@@ -139,4 +193,4 @@
       </div>
     </div>
   </div>
-  </div>
+</div>

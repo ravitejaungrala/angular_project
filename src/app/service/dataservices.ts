@@ -244,7 +244,7 @@ private departments: Department[] = [
     { id: 40, name: 'Nora Kelly', email: 'nora@student.edu', department: 'ECE', year: 4, 
       courses: [407, 408, 409, 410], marks: {407: 79, 408: 84, 409: 81, 410: 76}, fees: {amount: 48000, paid: true} }
   ];
-  constructor() {this.loadStudentsFromStorage(); }
+  constructor() {this.loadStudentsFromStorage();  this.loadTeachersFromStorage();}
 
   private loadStudentsFromStorage(): void {
     const storedData = localStorage.getItem('studentsData');
@@ -256,6 +256,48 @@ private departments: Department[] = [
   getDepartments(): Department[] {
     return this.departments;
   }
+addStudent(student: Student): void {
+  if (!student.id) {
+    student.id = this.generateStudentId();
+  }
+
+  // Ensure marks are initialized for all courses
+  if (!student.marks) {
+    student.marks = {};
+    student.courses.forEach(courseId => {
+      student.marks[courseId] = 0;
+    });
+  }
+
+  this.students.push(student);
+  this.saveStudentsToStorage();
+
+  // Save student credentials
+  const studentsAuth = JSON.parse(localStorage.getItem('studentsAuth') || '[]');
+  const emailPrefix = student.email.split('@')[0];
+  studentsAuth.push({
+    id: student.id,
+    email: student.email,
+    password: emailPrefix.slice(0, 3) + '123' // Default password pattern
+  });
+  localStorage.setItem('studentsAuth', JSON.stringify(studentsAuth));
+}
+assignMarks(studentId: number, courseId: number, mark: number): void {
+  const students = this.getStudents();
+  const studentIndex = students.findIndex(s => s.id === studentId);
+  
+  if (studentIndex !== -1 && students[studentIndex].courses.includes(courseId)) {
+    if (!students[studentIndex].marks) {
+      students[studentIndex].marks = {};
+    }
+    students[studentIndex].marks[courseId] = mark;
+    this.saveStudentsToStorage();
+  }
+}
+private generateStudentId(): number {
+  const students = this.getStudents();
+  return students.length > 0 ? Math.max(...students.map(s => s.id)) + 1 : 1;
+}
 
   getDepartmentById(id: number): Department | undefined {
     return this.departments.find(dept => dept.id === id);
@@ -317,10 +359,27 @@ private departments: Department[] = [
     return this.teachers.filter(teacher => teacher.department === dept);
   }
 
-  addTeacher(teacher: Teacher): void {
-    this.teachers.push(teacher);
+addTeacher(teacher: Teacher): void {
+  if (!teacher.id) {
+    teacher.id = this.generateTeacherId();
   }
 
+  this.teachers.push(teacher);
+  this.saveTeachersToStorage();
+
+  // Save teacher credentials
+  const teachersAuth = JSON.parse(localStorage.getItem('teachersAuth') || '[]');
+  teachersAuth.push({
+    id: teacher.id,
+    email: teacher.email,
+    password: 't12345' // Default teacher password
+  });
+  localStorage.setItem('teachersAuth', JSON.stringify(teachersAuth));
+}
+
+private saveTeachersToStorage(): void {
+  localStorage.setItem('teachersData', JSON.stringify(this.teachers));
+}
   updateTeacher(updatedTeacher: Teacher): void {
     const index = this.teachers.findIndex(teacher => teacher.id === updatedTeacher.id);
     if (index !== -1) {
@@ -414,10 +473,13 @@ private saveStudentsToStorage(): void {
   getStudentsByYear(year: number): Student[] {
     return this.students.filter(student => student.year === year);
   }
-
-  addStudent(student: Student): void {
-    this.students.push(student);
-  }
+generateId(): number {
+  const students = this.getStudents();
+  return students.length > 0 ? Math.max(...students.map(s => s.id)) + 1 : 1;
+}
+  // addStudent(student: Student): void {
+  //   this.students.push(student);
+  // }
 
  
 
@@ -433,45 +495,93 @@ updateStudent(student: Student): void {
     this.students[index] = student;
     // Update payment history
     this.updatePaymentHistory(student);
+     this.saveStudentsToStorage();
   }
 }
-
+assignMarksToStudent(studentId: number, courseId: number, mark: number): void {
+  const students = this.getStudents();
+  const studentIndex = students.findIndex(s => s.id === studentId);
+  
+  if (studentIndex !== -1) {
+    if (!students[studentIndex].marks) {
+      students[studentIndex].marks = {};
+    }
+    students[studentIndex].marks[courseId] = mark;
+    this.saveStudentsToStorage();
+  }
+}
+ private loadTeachersFromStorage(): void {
+    const storedData = localStorage.getItem('teachersData');
+    if (storedData) {
+      const storedTeachers = JSON.parse(storedData);
+      // Merge with default teachers
+      storedTeachers.forEach((storedTeacher: any) => {
+        if (!this.teachers.some(t => t.id === storedTeacher.id)) {
+          this.teachers.push({
+            id: storedTeacher.id,
+            name: storedTeacher.name || 'New Teacher',
+            email: storedTeacher.email,
+            department: storedTeacher.department || 'CSE',
+            courses: storedTeacher.courses || []
+          });
+        }
+      });
+    }
+  }
+//   assignMarks(studentId: number, courseId: number, mark: number): void {
+//   const student = this.getStudentById(studentId);
+//   if (student && student.courses.includes(courseId)) {
+//     if (!student.marks) {
+//       student.marks = {};
+//     }
+//     student.marks[courseId] = mark;
+//     this.saveStudentsToStorage();
+//   }
+// }
+private generateTeacherId(): number {
+  const teachers = this.getTeachers();
+  return teachers.length > 0 ? Math.max(...teachers.map(t => t.id)) + 1 : 1;
+}
 private updatePaymentHistory(student: Student): void {
   const history = JSON.parse(localStorage.getItem('paymentHistory') || '[]');
   // Add logic to track both college and hostel payments
   localStorage.setItem('paymentHistory', JSON.stringify(history));
 }
 validateUser(username: string, password: string): { role: string, id?: number } | null {
-  console.log('Validating:', username, password); // Debug log
-  
-  // Check admin
+  // Check admin (unchanged)
   if (username === 'admin' && password === '12345') {
-    console.log('Admin login detected'); // Debug log
     return { role: 'admin' };
   }
   
-  // Check teacher
-  const teacher = this.teachers.find(t => t.email === username && password === 't12345');
-  if (teacher) {
-    console.log('Teacher login detected:', teacher); // Debug log
+  // Check teachers - first in default data, then in localStorage
+  let teacher = this.teachers.find(t => t.email === username);
+  if (!teacher) {
+    // Check if teacher exists in localStorage
+    const storedTeachers = JSON.parse(localStorage.getItem('teachersData') || '[]');
+    teacher = storedTeachers.find((t: Teacher) => t.email === username);
+  }
+  
+  if (teacher && password === 't12345') {
     return { role: 'teacher', id: teacher.id };
   }
   
-  // Check student
-  const student = this.students.find(s => s.email === username);
+  // Check students - first in default data, then in localStorage
+  let student = this.students.find(s => s.email === username);
+  if (!student) {
+    // Check if student exists in localStorage
+    const storedStudents = JSON.parse(localStorage.getItem('studentsData') || '[]');
+    student = storedStudents.find((s: Student) => s.email === username);
+  }
+  
   if (student) {
     const reqpwd = student.email.slice(0, 3) + '123';
     if (password === reqpwd) {
-      console.log('Student login detected:', student); // Debug log
       return { role: 'student', id: student.id };
     }
   }
   
-  console.log('No valid user found'); // Debug log
   return null;
 }
-// Add these methods to your Dataservices class
-
 // Get attendance for a student
 getStudentAttendance(studentId: number): AttendanceRecord[] {
   const student = this.getStudentById(studentId);

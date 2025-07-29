@@ -16,7 +16,7 @@ teachers: Teacher[] = [];
   teacherForm: FormGroup;
   isEditing = false;
   currentTeacherId: number | null = null;
-
+teacherCourses: { course: Course, students: Student[] }[] = [];
   constructor(
     private dataService: Dataservices,
     private fb: FormBuilder
@@ -32,37 +32,63 @@ teachers: Teacher[] = [];
   ngOnInit(): void {
     this.loadTeachers();
     this.departments = this.dataService.getDepartments().map(dept => dept.name);
-    this.courses = this.dataService.getCourses().map(course => ({
-      id: course.id,
-      name: `${course.name} (${course.department})`
-    }));
+    this.courses = this.dataService.getCourses();
+    this.loadTeacherCourses();
   }
 
   loadTeachers(): void {
     this.teachers = this.dataService.getTeachers();
   }
+// teachers.component.ts
+loadTeacherCourses(): void {
+  const storedUser = localStorage.getItem('teacherUser');
+  const user: User = storedUser ? JSON.parse(storedUser) : {};
+  
+  if (user.role === 'teacher' && user.id) {
+    const teacher = this.dataService.getTeacherById(user.id);
+    if (teacher) {
+      this.teacherCourses = teacher.courses
+        .map(courseId => {
+          const course = this.dataService.getCourseById(courseId);
+          if (!course) return null;
+          const students = this.dataService.getStudentsByCourse(courseId);
+          return { course, students };
+        })
+        .filter(item => item !== null) as { course: Course; students: Student[] }[];
+    }
+  }
+}
 
   onSubmit(): void {
-    if (this.teacherForm.invalid) return;
+  if (this.teacherForm.invalid) return;
 
-    const formValue = this.teacherForm.value;
-    const teacher: Teacher = {
-      id: this.currentTeacherId || this.generateId(),
-      name: formValue.name,
-      email: formValue.email,
-      department: formValue.department,
-      courses: formValue.courses
-    };
+  const formValue = this.teacherForm.value;
+  const teacher: Teacher = {
+    id: this.currentTeacherId || this.generateId(),
+    name: formValue.name,
+    email: formValue.email,
+    department: formValue.department,
+    courses: formValue.courses || []
+  };
 
-    if (this.isEditing && this.currentTeacherId) {
-      this.dataService.updateTeacher(teacher);
-    } else {
-      this.dataService.addTeacher(teacher);
-    }
-
-    this.resetForm();
-    this.loadTeachers();
+  if (this.isEditing && this.currentTeacherId) {
+    this.dataService.updateTeacher(teacher);
+  } else {
+    this.dataService.addTeacher(teacher);
+    
+    // Fixed this line:
+    const teachersData = JSON.parse(localStorage.getItem('teachersData') || '[]');
+    teachersData.push({
+      id: teacher.id,
+      email: teacher.email,
+      password: 't12345'
+    });
+    localStorage.setItem('teachersData', JSON.stringify(teachersData));
   }
+
+  this.resetForm();
+  this.loadTeachers();
+}
 
   onEdit(teacher: Teacher): void {
     this.isEditing = true;

@@ -6,6 +6,9 @@
       <div class="card">
         <div class="card-header bg-dark text-white">
           All Students Marks
+          <button class="btn btn-sm btn-primary float-right" (click)="onSubmitMarks()" [disabled]="marksForm.invalid">
+            Save All Marks
+          </button>
         </div>
         <div class="card-body">
           <div *ngIf="students.length === 0" class="alert alert-info">
@@ -13,6 +16,30 @@
           </div>
           
           <form [formGroup]="marksForm" *ngIf="students.length > 0">
+            <div class="form-group row mb-3">
+              <div class="col-md-4">
+                <label>Filter by Department</label>
+                <select class="form-control" (change)="filterByDepartment($event)">
+                  <option value="">All Departments</option>
+                  <option *ngFor="let dept of departments" [value]="dept">{{ dept }}</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label>Filter by Year</label>
+                <select class="form-control" (change)="filterByYear($event)">
+                  <option value="">All Years</option>
+                  <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label>Filter by Course</label>
+                <select class="form-control" (change)="filterByCourse($event)">
+                  <option value="">All Courses</option>
+                  <option *ngFor="let course of courses" [value]="course.id">{{ course.name }}</option>
+                </select>
+              </div>
+            </div>
+
             <table class="table table-striped table-bordered">
               <thead class="thead-dark">
                 <tr>
@@ -27,65 +54,66 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let student of students">
+                <tr *ngFor="let student of filteredStudents" [class.table-primary]="selectedStudentId === student.id">
                   <td>{{ student.id }}</td>
                   <td>{{ student.name }}</td>
                   <td>{{ student.department }}</td>
                   <td>{{ student.year }}</td>
                   <td>
-                    <div *ngFor="let course of getStudentCourses(student)">
-                      {{ course.name }}
-                    </div>
+                    <select class="form-control" (change)="selectStudentAndCourse(student.id, $event)">
+                      <option value="">Select Course</option>
+                      <option *ngFor="let courseId of student.courses" 
+                              [value]="courseId"
+                              [selected]="selectedCourseId === courseId">
+                        {{ getCourseName(courseId) }}
+                      </option>
+                    </select>
                   </td>
                   <td>
-                    <div *ngFor="let course of getStudentCourses(student)">
-                      <div *ngIf="editMode[getFormKey(student.id, course.id)]; else viewMode">
+                    <div *ngIf="selectedStudentId === student.id && selectedCourseId">
+                      <div *ngIf="editMode[getFormKey(student.id, selectedCourseId)]; else viewMode">
                         <input type="number" min="0" max="100" class="form-control" 
-                              [formControlName]="getFormKey(student.id, course.id)"
-                              [class.is-invalid]="marksForm.get(getFormKey(student.id, course.id))?.invalid && 
-                                                 marksForm.get(getFormKey(student.id, course.id))?.touched">
+                              [formControlName]="getFormKey(student.id, selectedCourseId)"
+                              [class.is-invalid]="marksForm.get(getFormKey(student.id, selectedCourseId))?.invalid && 
+                                                 marksForm.get(getFormKey(student.id, selectedCourseId))?.touched">
                       </div>
                       <ng-template #viewMode>
-                        {{ student.marks?.[course.id] || 'Not set' }}
+                        {{ student.marks?.[selectedCourseId] ?? 'Not set' }}
                       </ng-template>
                     </div>
                   </td>
                   <td>
-                    <div *ngFor="let course of getStudentCourses(student)">
-                      <span class="badge" 
-                            [ngClass]="{
-                              'badge-success': getGrade(student.marks[course.id]) === 'A+' || 
-                                              getGrade(student.marks[course.id]) === 'A',
-                              'badge-primary': getGrade(student.marks[course.id]) === 'B+' || 
-                                              getGrade(student.marks[course.id]) === 'B',
-                              'badge-warning': getGrade(student.marks[course.id]) === 'C+' || 
-                                              getGrade(student.marks[course.id]) === 'C',
-                              'badge-danger': getGrade(student.marks[course.id]) === 'D+' || 
-                                             getGrade(student.marks[course.id]) === 'D' ||
-                                             getGrade(student.marks[course.id]) === 'F'
-                            }">
-                        {{ getGrade(student.marks[course.id]) }}
-                      </span>
-                    </div>
+                    <span *ngIf="selectedStudentId === student.id && selectedCourseId" class="badge" 
+                          [ngClass]="{
+                            'badge-success': getGrade(student.marks?.[selectedCourseId]) === 'A+' || 
+                                            getGrade(student.marks?.[selectedCourseId]) === 'A',
+                            'badge-primary': getGrade(student.marks?.[selectedCourseId]) === 'B+' || 
+                                            getGrade(student.marks?.[selectedCourseId]) === 'B',
+                            'badge-warning': getGrade(student.marks?.[selectedCourseId]) === 'C+' || 
+                                            getGrade(student.marks?.[selectedCourseId]) === 'C',
+                            'badge-danger': getGrade(student.marks?.[selectedCourseId]) === 'D+' || 
+                                           getGrade(student.marks?.[selectedCourseId]) === 'D' ||
+                                           getGrade(student.marks?.[selectedCourseId]) === 'F'
+                          }">
+                      {{ getGrade(student.marks?.[selectedCourseId]) }}
+                    </span>
                   </td>
                   <td>
-                    <div *ngFor="let course of getStudentCourses(student)">
-                      <button *ngIf="!editMode[getFormKey(student.id, course.id)]" 
-                              class="btn btn-sm btn-primary"
-                              (click)="toggleEdit(student.id, course.id)">
-                        <i class="fas fa-edit"></i> Edit
+                    <button *ngIf="selectedStudentId === student.id && selectedCourseId && !editMode[getFormKey(student.id, selectedCourseId)]" 
+                            class="btn btn-sm btn-primary"
+                            (click)="toggleEdit(student.id, selectedCourseId)">
+                      <i class="fas fa-edit"></i> Edit
+                    </button>
+                    <div *ngIf="selectedStudentId === student.id && selectedCourseId && editMode[getFormKey(student.id, selectedCourseId)]">
+                      <button class="btn btn-sm btn-success mr-2"
+                              (click)="saveMark(student.id, selectedCourseId)"
+                              [disabled]="marksForm.get(getFormKey(student.id, selectedCourseId))?.invalid">
+                        <i class="fas fa-save"></i> Save
                       </button>
-                      <div *ngIf="editMode[getFormKey(student.id, course.id)]">
-                        <button class="btn btn-sm btn-success mr-2"
-                                (click)="saveMark(student.id, course.id)"
-                                [disabled]="marksForm.get(getFormKey(student.id, course.id))?.invalid">
-                          <i class="fas fa-save"></i> Save
-                        </button>
-                        <button class="btn btn-sm btn-secondary"
-                                (click)="toggleEdit(student.id, course.id)">
-                          <i class="fas fa-times"></i> Cancel
-                        </button>
-                      </div>
+                      <button class="btn btn-sm btn-secondary"
+                              (click)="toggleEdit(student.id, selectedCourseId)">
+                        <i class="fas fa-times"></i> Cancel
+                      </button>
                     </div>
                   </td>
                 </tr>

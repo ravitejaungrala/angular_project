@@ -14,6 +14,7 @@ import { Attendances } from './attendances/attendances';
 
 
 
+
 @NgModule({
   declarations: [
     Studentdashboard,

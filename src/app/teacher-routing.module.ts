@@ -6,6 +6,7 @@ import { Students } from './teacher/students/students';
 import { Marks } from './teacher/marks/marks';
 import { Teachernavbar } from './teacher/teachernavbar/teachernavbar';
 import { Attendances } from './teacher/attendances/attendances';
+
 const routes: Routes = [
   { 
     path: '', 
@@ -15,7 +16,7 @@ const routes: Routes = [
             { path: 'courses', component: Courses },
             { path: 'students', component: Students },
             { path: 'marks', component: Marks },
-            {path:'attendances',component:Attendances}
+            {path:'attendances',component:Attendances},
     ]
   }
 ];

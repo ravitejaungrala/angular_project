@@ -1,0 +1,131 @@
+/* Container and heading styles */
+.container {
+  backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.1);
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  color: #ffffff;
+  animation: fadeIn 1s ease-in-out;
+}
+
+/* Heading style */
+h2 {
+  font-size: 2rem;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #ffffff;
+}
+
+/* Card with glass effect */
+.card {
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 15px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+/* Card hover effect */
+.card:hover {
+  transform: scale(1.01);
+  box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
+}
+
+/* Card Header with gradient */
+.card-header {
+  background: linear-gradient(135deg, #1f1c2c, #928dab);
+  font-size: 1.25rem;
+  font-weight: 500;
+  padding: 12px;
+  border-radius: 15px 15px 0 0;
+  text-align: center;
+}
+
+/* Table Styling */
+.table {
+  margin-top: 15px;
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: rgba(255, 255, 255, 0.03);
+  color: #fff;
+}
+
+/* Table header */
+.table thead th {
+  background: linear-gradient(135deg, #2b2b52, #4e54c8);
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 14px;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Table row styles */
+.table tbody tr {
+  transition: background 0.3s ease, transform 0.3s ease;
+  cursor: pointer;
+}
+
+.table tbody tr:hover {
+  background: linear-gradient(90deg, #00c6ff, #0072ff);
+  transform: scale(1.01);
+  color: #ffffff;
+}
+
+/* Table cells */
+.table tbody td {
+  text-align: center;
+  padding: 14px;
+  font-size: 0.95rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Smooth animation on load */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive fix for small screens */
+@media (max-width: 768px) {
+  .table thead {
+    display: none;
+  }
+
+  .table, .table tbody, .table tr, .table td {
+    display: block;
+    width: 100%;
+  }
+
+  .table tr {
+    margin-bottom: 15px;
+  }
+
+  .table td {
+    text-align: right;
+    padding-left: 50%;
+    position: relative;
+  }
+
+  .table td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 15px;
+    width: 45%;
+    padding-left: 15px;
+    font-weight: bold;
+    text-align: left;
+  }
+}

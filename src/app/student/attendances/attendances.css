@@ -1,0 +1,150 @@
+body {
+  background: linear-gradient(to right, #1c1c1c, #2e2e2e);
+  color: #e0e0e0;
+  font-family: 'Segoe UI', sans-serif;
+  padding: 20px;
+}
+
+h2, h4 {
+  color: #f8b400;
+  text-shadow: 1px 1px 4px #000;
+}
+
+.card {
+  background: rgba(30, 30, 30, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px) scale(1.01);
+  box-shadow: 0 12px 24px rgba(255, 200, 0, 0.2);
+}
+
+.card-header {
+  background-color: rgba(0, 0, 0, 0.3);
+  color: #ffcc00;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px 16px 0 0;
+}
+
+.card-body {
+  color: #d4d4d4;
+}
+
+.card-title {
+  color: #f2a541;
+  font-weight: 600;
+}
+
+.card-text {
+  color: #bbbbbb;
+}
+
+.table {
+  color: #cccccc;
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.table th {
+  color: #f39c12;
+  background-color: rgba(0, 0, 0, 0.4);
+  border: none;
+}
+
+.table td {
+  color: #dddddd;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.text-success {
+  color: #4caf50 !important;
+}
+
+.text-warning {
+  color: #ff9800 !important;
+}
+
+.text-danger {
+  color: #f44336 !important;
+}
+
+.bg-success {
+  background-color: rgba(76, 175, 80, 0.3) !important;
+}
+
+.bg-warning {
+  background-color: rgba(255, 152, 0, 0.3) !important;
+}
+
+.bg-danger {
+  background-color: rgba(244, 67, 54, 0.3) !important;
+}
+
+.badge {
+  font-size: 0.8rem;
+  padding: 0.4em 0.7em;
+  border-radius: 8px;
+  background-color: #444;
+  color: #ffeb3b;
+}
+
+.btn {
+  background: linear-gradient(to right, #f57c00, #e65100);
+  border: none;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-weight: bold;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.btn:hover {
+  background: linear-gradient(to right, #ffa726, #fb8c00);
+  transform: scale(1.05);
+  box-shadow: 0 6px 18px rgba(255, 200, 0, 0.4);
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(255, 193, 7, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 193, 7, 0);
+  }
+}
+
+.pulse-animation {
+  animation: pulse 2s infinite;
+}
+/* Add this to your existing CSS */
+.date {
+  font-weight: 600;
+  font-size: 16px;
+  color: #66ffe0; /* Light teal */
+  animation: pulseColor 3s infinite;
+  transition: color 0.4s ease-in-out;
+}
+
+@keyframes pulseColor {
+  0% {
+    color: #66ffe0; /* Light teal */
+  }
+  50% {
+    color: #00e6b8; /* Teal */
+  }
+  100% {
+    color: #1de9b6; /* Fresh teal */
+  }
+}

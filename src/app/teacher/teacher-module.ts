@@ -5,12 +5,12 @@ import { Courses } from './courses/courses';
 import { Students } from './students/students';
 import { Marks } from './marks/marks';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+
 import { Dataservices } from '../service/dataservices';
 import { Teachernavbar } from './teachernavbar/teachernavbar';
-import { AdminRoutingModule } from '../admin-routing.module';
 import { TeacherRoutingModule } from '../teacher-routing.module';
 import { Attendances } from './attendances/attendances';
+
 
 
 

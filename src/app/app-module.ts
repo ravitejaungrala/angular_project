@@ -17,7 +17,7 @@ import { Dataservices } from './service/dataservices';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    
+    FormsModule,
     ReactiveFormsModule
   ],
   providers: [

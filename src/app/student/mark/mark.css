@@ -1,0 +1,172 @@
+/* Container with glass effect */
+.container {
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  color: #ffffff;
+  animation: fadeIn 1s ease;
+}
+
+/* Heading */
+h2 {
+  font-size: 2rem;
+  font-weight: 600;
+  text-align: center;
+  color: #ffffff;
+  margin-bottom: 20px;
+}
+
+/* Card */
+.card {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: scale(1.01);
+  box-shadow: 0 12px 40px rgba(255, 255, 255, 0.1);
+}
+
+/* Card header with gradient */
+.card-header {
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  color: white;
+  font-weight: 500;
+  font-size: 1.2rem;
+  padding: 12px;
+  border-radius: 15px 15px 0 0;
+  text-align: center;
+}
+
+/* Alert style */
+.alert-info {
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  color: #fff;
+  font-weight: bold;
+  text-align: center;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(102, 126, 234, 0.6);
+}
+
+/* Table */
+.table {
+  margin-top: 15px;
+  background-color: rgba(255, 255, 255, 0.02);
+  color: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* Table Header */
+.table thead th {
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-align: center;
+}
+
+/* Table Row */
+.table tbody tr {
+  transition: background 0.3s ease, transform 0.3s ease;
+  cursor: pointer;
+}
+
+.table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.07);
+  transform: scale(1.01);
+}
+
+/* Table Cell */
+.table tbody td {
+  padding: 14px;
+  text-align: center;
+  font-size: 0.95rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Badge styles */
+.badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: bold;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.badge-success {
+  background: #00c851;
+  color: #fff;
+  box-shadow: 0 0 8px #00c851aa;
+}
+
+.badge-warning {
+  background: #ffbb33;
+  color: #fff;
+  box-shadow: 0 0 8px #ffbb33aa;
+}
+
+.badge-danger {
+  background: #ff4444;
+  color: #fff;
+  box-shadow: 0 0 8px #ff4444aa;
+}
+
+.badge:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .table thead {
+    display: none;
+  }
+
+  .table, .table tbody, .table tr, .table td {
+    display: block;
+    width: 100%;
+  }
+
+  .table tr {
+    margin-bottom: 20px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 10px;
+    padding: 10px;
+  }
+
+  .table td {
+    text-align: right;
+    padding-left: 50%;
+    position: relative;
+  }
+
+  .table td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 15px;
+    width: 45%;
+    font-weight: bold;
+    text-align: left;
+  }
+}

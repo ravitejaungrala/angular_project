@@ -17,6 +17,7 @@ interface Student {
     };
   };
   attendance?: AttendanceRecord[];
+   status?: 'present' | 'absent' | 'late'; // <-- Add this line
 }
 
 interface Teacher {
@@ -57,3 +58,68 @@ interface AttendanceRecord {
    studentId: number; 
 }
 
+interface AttendanceSummary {
+  courseId: number;
+  courseName: string;
+  totalClasses: number;
+  presentClasses: number;
+  percentage: number;
+}
+
+interface CourseWithStudents {
+  id: number;
+  name: string;
+  department: string;
+  students: StudentAttendance[];
+}
+
+interface StudentAttendance {
+  id: number;
+  name: string;
+  department: string;
+  year: number;
+  attendancePercentage: number;
+  attendanceStatus: 'present' | 'absent' | 'late';
+}
+
+
+interface Examination {
+  id: number;
+  name: string; // e.g., "First Semester Exams 2023"
+  type: 'semester' | 'midterm' | 'final';
+  year: number;
+  startDate: string;
+  endDate: string;
+  departments: string[];
+  status: 'upcoming' | 'ongoing' | 'completed';
+}
+
+interface ExamSchedule {
+  id: number;
+  examId: number;
+  courseId: number;
+  date: string;
+  time: string;
+  duration: string;
+  roomAllocations: RoomAllocation[];
+}
+
+interface RoomAllocation {
+  id: number;
+  roomNo: string;
+  block: string;
+  teacherId: number;
+  studentIds: number[];
+}
+
+interface HallTicket {
+  id: number;
+  studentId: number;
+  examId: number;
+  courses: number[];
+  roomNo: string;
+  block: string;
+  examDate: string;
+  issuedDate: string;
+  isApproved: boolean;
+}

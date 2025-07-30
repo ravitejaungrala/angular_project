@@ -1,0 +1,118 @@
+.container {
+  font-family: 'Segoe UI', sans-serif;
+  color: #333;
+}
+
+h2 {
+  color: #2c3e50;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.card {
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+}
+
+.card-header {
+  background: linear-gradient(135deg, #007bff, #6f42c1);
+  color: white;
+  padding: 1rem 1.5rem;
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.table {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.table-striped tbody tr {
+  transition: background-color 0.3s ease;
+}
+
+.table-striped tbody tr:hover {
+  background-color: #f1f8ff;
+}
+
+th {
+  background-color: #f8f9fa;
+  font-weight: bold;
+}
+
+.btn-group .btn {
+  border-radius: 20px;
+  padding: 5px 12px;
+  margin: 2px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-group .btn:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+
+.btn-success {
+  background-color: #28a745;
+  border-color: #28a745;
+}
+
+.btn-warning {
+  background-color: #ffc107;
+  border-color: #ffc107;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+
+.btn-success:hover {
+  background-color: #218838;
+}
+
+.btn-warning:hover {
+  background-color: #e0a800;
+}
+
+.btn-danger:hover {
+  background-color: #c82333;
+}
+
+.form-select,
+.form-control {
+  border-radius: 10px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-select:focus,
+.form-control:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
+}
+
+button[type="submit"],
+.btn-success {
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button[type="submit"]:hover,
+.btn-success:hover {
+  transform: translateY(-2px);
+  background-color: #1e7e34;
+}
+
+.d-flex.justify-content-end button {
+  padding: 10px 20px;
+  font-weight: bold;
+  border-radius: 25px;
+}

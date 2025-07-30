@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Dataservices } from '../../service/dataservices';
 
 @Component({
@@ -9,99 +9,114 @@ import { Dataservices } from '../../service/dataservices';
   styleUrl: './attendances.css'
 })
 export class Attendances {
-
- courses: any[] = [];
+  courses: any[] = [];
   students: any[] = [];
-  selectedCourse: any;
   attendanceForm: FormGroup;
+  selectedCourse: any;
   attendanceDate: string = new Date().toISOString().split('T')[0];
   attendanceRecords: any[] = [];
+  attendanceSummary: any;
 
-  constructor(private dataService: Dataservices, private fb: FormBuilder) {
+  constructor(
+    private dataService: Dataservices,
+    private fb: FormBuilder
+  ) {
     this.attendanceForm = this.fb.group({
-      courseId: [''],
-      date: [this.attendanceDate]
+      courseId: ['', Validators.required],
+      date: [this.attendanceDate, Validators.required]
     });
   }
-
+private storageSub: any;
   ngOnInit(): void {
+    this.loadCourses();
+    this.storageSub = window.addEventListener('storage', (event) => {
+    if (event.key === 'attendanceUpdated') {
+      this.loadAttendanceRecords(); // Refresh data when updated
+    }
+  });
+  }
+
+  loadCourses(): void {
     this.courses = this.dataService.getCourses();
   }
-
-  loadStudents(): void {
-    this.students = this.dataService.getStudentsByCourse(this.selectedCourse.id)
-      .map(student => {
-        // Initialize each student with default attendance status
-        return {
-          ...student,
-          attendancePercentage: this.dataService.getAttendancePercentage(student.id, this.selectedCourse.id),
-          attendanceStatus: 'present' // Default status for new records
-        };
-      });
+ngOnDestroy(): void {
+  // Clean up listener
+  window.removeEventListener('storage', this.storageSub);
+}
+onCourseSelect(): void {
+  const courseId = Number(this.attendanceForm.value.courseId); // Ensure it's a number
+  this.selectedCourse = this.dataService.getCourseById(courseId);
+  
+  if (!this.selectedCourse) {
+    console.error('Course not found for ID:', courseId);
+    console.log('Available courses:', this.dataService.getCourses());
+    return;
   }
 
+  this.loadStudentsForCourse();
+  this.loadAttendanceRecords();
+}
+  loadStudentsForCourse(): void {
+  if (!this.selectedCourse) return;
+  
+  this.students = this.dataService.getStudentsByCourse(this.selectedCourse.id).map(student => {
+    return {
+      ...student,
+      status: 'present' // default status
+    };
+  });
+}
   loadAttendanceRecords(): void {
-     if (this.selectedCourse && this.attendanceDate) {
-      this.attendanceRecords = this.dataService.getCourseAttendance(this.selectedCourse.id, this.attendanceDate);
-      
-      // Update student statuses based on existing records
+    const records = this.dataService.getCourseAttendance(
+      this.selectedCourse.id, 
+      this.attendanceForm.value.date
+    );
+    
+    this.attendanceRecords = records;
+    
+    // Update student statuses if records exist
+    if (records.length > 0) {
       this.students.forEach(student => {
-        const existingRecord = this.attendanceRecords.find(record => 
-          record.studentId === student.id
-        );
-        if (existingRecord) {
-          student.attendanceStatus = existingRecord.status;
-        } else {
-          student.attendanceStatus = 'present'; // Default for new records
+        const record = records.find(r => r.studentId === student.id);
+        if (record) {
+          student.status = record.status;
         }
       });
     }
   }
 
-  onCourseChange(): void {
-   if (this.selectedCourse) {
-      this.loadStudents();
-      this.loadAttendanceRecords();
-    }
-  }
-
-  onDateChange(): void {
-    if (this.selectedCourse) {
-      this.loadAttendanceRecords();
-    }
-  }
-
-   submitAttendance(): void {
-  if (!this.selectedCourse) {
-    alert('Please select a course first');
-    return;
-  }
-
-  const attendanceData = this.students
-    .filter(student => student.id)
-    .map(student => ({
+  markAttendance(): void {
+    const attendanceData = this.students.map(student => ({
       studentId: student.id,
-      status: student.attendanceStatus
+      status: student.status
     }));
-  
-  this.dataService.markAttendance(
-    this.selectedCourse.id,
-    this.attendanceDate,
-    attendanceData
-  );
-  
-  alert('Attendance saved successfully!');
-  
-  // Refresh the data to show updated percentages
-  this.loadStudents();
-  this.loadAttendanceRecords();
-  
-  // Recalculate percentages for all students
-  this.students = this.students.map(student => {
-    return {
-      ...student,
-      attendancePercentage: this.dataService.getAttendancePercentage(student.id, this.selectedCourse.id)
+
+    this.dataService.markAttendance(
+      this.selectedCourse.id,
+      this.attendanceForm.value.date,
+      attendanceData
+    );
+
+    this.loadAttendanceRecords();
+    this.calculateAttendanceSummary();
+  }
+
+  calculateAttendanceSummary(): void {
+    const presentCount = this.attendanceRecords.filter(r => r.status === 'present').length;
+    const absentCount = this.attendanceRecords.filter(r => r.status === 'absent').length;
+    const lateCount = this.attendanceRecords.filter(r => r.status === 'late').length;
+    const total = this.attendanceRecords.length;
+
+    this.attendanceSummary = {
+      present: presentCount,
+      absent: absentCount,
+      late: lateCount,
+      total: total,
+      presentPercentage: total > 0 ? Math.round((presentCount / total) * 100) : 0
     };
-  });
-}
+  }
+
+  updateAttendanceStatus(student: any, status: 'present' | 'absent' | 'late'): void {
+    student.status = status;
+  }
 }

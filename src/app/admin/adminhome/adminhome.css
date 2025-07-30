@@ -1,0 +1,71 @@
+/* General Container */
+.admin-dashboard {
+  animation: fadeInUp 0.7s ease-in-out;
+}
+
+/* Dashboard Title */
+.dashboard-title {
+  font-weight: 700;
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  color: #2c3e50;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Stat Cards Styling */
+.stat-card {
+  transition: transform 0.4s ease, box-shadow 0.3s ease;
+  border-radius: 15px;
+  cursor: pointer;
+}
+.stat-card:hover {
+  transform: translateY(-10px) scale(1.03);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Quick Links Styling */
+.quick-links .list-group-item {
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  font-weight: 500;
+}
+.quick-links .list-group-item:hover {
+  background-color: #0d6efd;
+  color: #fff;
+  transform: translateX(5px);
+}
+
+/* Recent Activities Card */
+.recent-activities {
+  border-left: 5px solid #343a40;
+  background-color: #f8f9fa;
+}
+
+/* Animation on Load */
+@keyframes fadeInUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Card Header Style */
+.card-header {
+  font-size: 1.1rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Responsive Typography */
+@media (max-width: 768px) {
+  .dashboard-title {
+    font-size: 1.5rem;
+  }
+  .stat-card .card-text {
+    font-size: 1.5rem;
+  }
+}

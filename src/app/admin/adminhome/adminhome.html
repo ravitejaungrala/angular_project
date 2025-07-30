@@ -1,71 +1,93 @@
 <!-- src/app/admin/adminhome/adminhome.component.html -->
-<div class="container mt-4">
-  <h2>Admin Dashboard</h2>
-  
-  <div class="row mt-4">
+<div class="container mt-4 admin-dashboard">
+  <h2 class="dashboard-title"><i class="bi bi-speedometer2 me-2"></i>Admin Dashboard</h2>
+
+  <div class="row g-4">
     <div class="col-md-3">
-      <div class="card text-white bg-primary mb-3">
-        <div class="card-body">
-          <h5 class="card-title">Students</h5>
-          <p class="card-text display-4">{{ stats.students }}</p>
+      <div class="card stat-card bg-primary text-white">
+        <div class="card-body text-center">
+          <i class="bi bi-people-fill fs-1"></i>
+          <h5 class="card-title mt-2">Students</h5>
+          <p class="card-text display-6">{{ stats.students }}</p>
         </div>
       </div>
     </div>
-    
+
     <div class="col-md-3">
-      <div class="card text-white bg-success mb-3">
-        <div class="card-body">
-          <h5 class="card-title">Teachers</h5>
-          <p class="card-text display-4">{{ stats.teachers }}</p>
+      <div class="card stat-card bg-success text-white">
+        <div class="card-body text-center">
+          <i class="bi bi-person-badge-fill fs-1"></i>
+          <h5 class="card-title mt-2">Teachers</h5>
+          <p class="card-text display-6">{{ stats.teachers }}</p>
         </div>
       </div>
     </div>
-    
+
     <div class="col-md-3">
-      <div class="card text-white bg-info mb-3">
-        <div class="card-body">
-          <h5 class="card-title">Courses</h5>
-          <p class="card-text display-4">{{ stats.courses }}</p>
+      <div class="card stat-card bg-info text-white">
+        <div class="card-body text-center">
+          <i class="bi bi-journal-bookmark-fill fs-1"></i>
+          <h5 class="card-title mt-2">Courses</h5>
+          <p class="card-text display-6">{{ stats.courses }}</p>
         </div>
       </div>
     </div>
-    
+
     <div class="col-md-3">
-      <div class="card text-white bg-warning mb-3">
-        <div class="card-body">
-          <h5 class="card-title">Departments</h5>
-          <p class="card-text display-4">{{ stats.departments }}</p>
+      <div class="card stat-card bg-warning text-white">
+        <div class="card-body text-center">
+          <i class="bi bi-building fs-1"></i>
+          <h5 class="card-title mt-2">Departments</h5>
+          <p class="card-text display-6">{{ stats.departments }}</p>
         </div>
       </div>
     </div>
   </div>
-  
-  <div class="row mt-4">
+
+  <div class="row mt-5 g-4">
     <div class="col-md-4">
-      <div class="card">
+      <div class="card quick-links shadow-sm">
         <div class="card-header bg-dark text-white">
-          Quick Links
+          <i class="bi bi-link-45deg me-2"></i>Quick Links
         </div>
         <div class="list-group list-group-flush">
-          <a routerLink="/admin/students" class="list-group-item list-group-item-action">Manage Students</a>
-          <a routerLink="/admin/teachers" class="list-group-item list-group-item-action">Manage Teachers</a>
-          <a routerLink="/admin/courses" class="list-group-item list-group-item-action">Manage Courses</a>
-          <a routerLink="/admin/departments" class="list-group-item list-group-item-action">Manage Departments</a>
-          <a routerLink="/admin/marks" class="list-group-item list-group-item-action">Manage Marks</a>
-          <a routerLink="/admin/fees" class="list-group-item list-group-item-action">Manage Fees</a>
-          <a routerLink="/admin/hostel" class="list-group-item list-group-item-action">Manage Hostel</a>
+          <a routerLink="/admin/students" class="list-group-item list-group-item-action link-hover">
+            <i class="bi bi-person-lines-fill me-2"></i>Manage Students
+          </a>
+          <a routerLink="/admin/teachers" class="list-group-item list-group-item-action link-hover">
+            <i class="bi bi-person-workspace me-2"></i>Manage Teachers
+          </a>
+          <a routerLink="/admin/courses" class="list-group-item list-group-item-action link-hover">
+            <i class="bi bi-journal-text me-2"></i>Manage Courses
+          </a>
+          <a routerLink="/admin/departments" class="list-group-item list-group-item-action link-hover">
+            <i class="bi bi-diagram-3-fill me-2"></i>Manage Departments
+          </a>
+          <a routerLink="/admin/marks" class="list-group-item list-group-item-action link-hover">
+            <i class="bi bi-clipboard-data-fill me-2"></i>Manage Marks
+          </a>
+          <a routerLink="/admin/fees" class="list-group-item list-group-item-action link-hover">
+            <i class="bi bi-credit-card-2-front-fill me-2"></i>Manage Fees
+          </a>
+          <a routerLink="/admin/hostel" class="list-group-item list-group-item-action link-hover">
+            <i class="bi bi-house-fill me-2"></i>Manage Hostel
+          </a>
+         <a routerLink="/admin/attendances" class="list-group-item list-group-item-action link-hover">
+  <i class="bi bi-check2-square me-2"></i>Manage Attendances
+</a>
+
         </div>
       </div>
     </div>
-    
+
     <div class="col-md-8">
-      <div class="card">
+      <div class="card recent-activities shadow-sm">
         <div class="card-header bg-dark text-white">
-          Recent Activities
+          <i class="bi bi-clock-history me-2"></i>Recent Activities
         </div>
         <div class="card-body">
-          <p>System is running smoothly.</p>
-          <p>Last login: {{ today | date:'medium' }}</p>
+          <p class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>System is running smoothly.</p>
+          <p><i class="bi bi-calendar-check me-2"></i>Last login: {{ today | date:'medium' }}</p>
         </div>
       </div>
     </div>

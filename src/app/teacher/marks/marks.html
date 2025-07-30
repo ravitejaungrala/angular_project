@@ -42,7 +42,8 @@
                                                  marksForm.get(getFormKey(studentData.student.id, course.id))?.touched">
                       </div>
                       <ng-template #viewMode>
-                        {{ studentData.student.marks?.[course.id] || 'Not set' }}
+                        {{ studentData.student.marks[course.id] || 'Not set' }}
+
                       </ng-template>
                     </td>
                     <td>

@@ -1,6 +1,6 @@
-<div class="container">
+<div class="container fade-in">
   <!-- Loading State -->
-  <div *ngIf="isLoading" class="alert alert-info text-center">
+  <div *ngIf="isLoading" class="alert alert-info text-center glass-card">
     <div class="spinner-border text-primary" role="status">
       <span class="visually-hidden">Loading...</span>
     </div>
@@ -9,13 +9,13 @@
 
   <!-- Main Content -->
   <div *ngIf="!isLoading && student">
-    <h2 class="mb-4">Hostel Information</h2>
-    
-    <div *ngIf="student.hostel?.allocated; else notAllocated" class="card shadow-sm">
-      <div class="card-header bg-primary text-white">
+    <h2 class="mb-4 text-white">🏠 Hostel Information</h2>
+
+    <div *ngIf="student.hostel?.allocated; else notAllocated" class="glass-card fade-in mb-4">
+      <div class="bg-primary text-white rounded-top px-3 py-2">
         <h5 class="mb-0">Your Hostel Details</h5>
       </div>
-      <div class="card-body">
+      <div class="card-body pt-3">
         <div class="row">
           <div class="col-md-6">
             <p><strong>Room Number:</strong> {{ student.hostel?.block }}-{{ student.hostel?.roomNo }}</p>
@@ -35,24 +35,22 @@
 
         <!-- Payment Section -->
         <div *ngIf="!student.hostel?.fees.paid" class="mt-4 border-top pt-3">
-          <h5 class="mb-3">Pay Hostel Fees</h5>
-          
+          <h5 class="mb-3">💳 Pay Hostel Fees</h5>
+
           <div class="row">
             <div class="col-md-6">
-              <div class="form-group">
-                <label class="form-label">Amount to Pay (₹)</label>
-                <input type="number" [(ngModel)]="paymentAmount" 
-                       class="form-control"
-                       [max]="student.hostel?.fees.amount"
-                       min="1" 
-                       placeholder="Enter amount">
-                <small class="text-muted">Maximum: ₹{{ student.hostel?.fees.amount }}</small>
-              </div>
+              <label class="form-label">Amount to Pay (₹)</label>
+              <input type="number" [(ngModel)]="paymentAmount"
+                     class="form-control"
+                     [max]="student.hostel?.fees.amount"
+                     min="1"
+                     placeholder="Enter amount">
+              <small class="text-muted">Maximum: ₹{{ student.hostel?.fees.amount }}</small>
             </div>
             <div class="col-md-6 d-flex align-items-end">
-              <button (click)="payHostelFees()" 
+              <button (click)="payHostelFees()"
                       [disabled]="!paymentAmount || paymentAmount <= 0 || paymentAmount > student.hostel?.fees.amount"
-                      class="btn btn-success">
+                      class="btn btn-glass">
                 <i class="bi bi-credit-card me-2"></i>Make Payment
               </button>
             </div>
@@ -60,7 +58,7 @@
         </div>
 
         <!-- Payment Confirmation -->
-        <div *ngIf="paymentDone" class="alert alert-success mt-3">
+        <div *ngIf="paymentDone" class="alert alert-success mt-4 glass-card">
           <div class="d-flex align-items-center">
             <i class="bi bi-check-circle-fill me-2"></i>
             <div>
@@ -78,13 +76,14 @@
       </div>
     </div>
 
+    <!-- Not Allocated -->
     <ng-template #notAllocated>
-      <div class="alert alert-warning">
+      <div class="alert alert-warning glass-card fade-in">
         <div class="d-flex align-items-center">
           <i class="bi bi-exclamation-triangle-fill me-2"></i>
           <div>
             <h5 class="alert-heading">No Hostel Allocation</h5>
-            <p class="mb-0">You are not currently allocated to any hostel. Please contact the administration office for allocation.</p>
+            <p class="mb-0">You are not currently allocated to any hostel. Please contact the admin office.</p>
           </div>
         </div>
       </div>
@@ -92,7 +91,7 @@
   </div>
 
   <!-- Error State -->
-  <div *ngIf="!isLoading && !student" class="alert alert-danger">
+  <div *ngIf="!isLoading && !student" class="alert alert-danger glass-card fade-in">
     <div class="d-flex align-items-center">
       <i class="bi bi-exclamation-octagon-fill me-2"></i>
       <div>

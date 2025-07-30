@@ -1,24 +1,30 @@
 <div class="container mt-4">
-  <h2>Attendance Management</h2>
+  <h2>Admin Attendance Management</h2>
   
-  <div class="row mb-3">
-    <div class="col-md-6">
-      <label class="form-label">Select Course</label>
-      <select class="form-select" (change)="onCourseChange()" [(ngModel)]="selectedCourse">
-        <option *ngFor="let course of courses" [ngValue]="course">
-          {{course.name}} ({{course.department}})
-        </option>
-      </select>
+  <form [formGroup]="attendanceForm" (ngSubmit)="onCourseSelect()">
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label for="courseSelect" class="form-label">Select Course</label>
+       <select id="courseSelect" class="form-select" formControlName="courseId">
+  <option value="">-- Select Course --</option>
+  <option *ngFor="let course of courses" [value]="course.id">
+    {{course.name}} ({{course.department}} - Year {{course.year}})
+  </option>
+</select>
+      </div>
+      <div class="col-md-4">
+        <label for="attendanceDate" class="form-label">Date</label>
+        <input type="date" id="attendanceDate" class="form-control" formControlName="date">
+      </div>
+      <div class="col-md-2 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary" [disabled]="!attendanceForm.valid">Load</button>
+      </div>
     </div>
-    <div class="col-md-6">
-      <label class="form-label">Date</label>
-      <input type="date" class="form-control" [(ngModel)]="attendanceDate" (change)="onDateChange()">
-    </div>
-  </div>
+  </form>
 
   <div *ngIf="selectedCourse" class="card mt-3">
     <div class="card-header">
-      <h5>Attendance for {{selectedCourse.name}} on {{attendanceDate}}</h5>
+      <h4>Attendance for {{selectedCourse.name}} - {{attendanceDate}}</h4>
     </div>
     <div class="card-body">
       <table class="table table-striped">
@@ -28,7 +34,6 @@
             <th>Name</th>
             <th>Department</th>
             <th>Year</th>
-            <th>Attendance %</th>
             <th>Status</th>
           </tr>
         </thead>
@@ -39,29 +44,70 @@
             <td>{{student.department}}</td>
             <td>{{student.year}}</td>
             <td>
-              <div class="progress">
-                <div class="progress-bar" 
-                     [ngClass]="{
-                       'bg-success': student.attendancePercentage >= 75,
-                       'bg-warning': student.attendancePercentage >= 50 && student.attendancePercentage < 75,
-                       'bg-danger': student.attendancePercentage < 50
-                     }" 
-                     [style.width.%]="student.attendancePercentage">
-                </div>
+              <div class="btn-group" role="group">
+                <button type="button" 
+                  class="btn btn-sm" 
+                  [class.btn-success]="student.status === 'present'"
+                  (click)="updateAttendanceStatus(student, 'present')">Present</button>
+                <button type="button" 
+                  class="btn btn-sm" 
+                  [class.btn-warning]="student.status === 'late'"
+                  (click)="updateAttendanceStatus(student, 'late')">Late</button>
+                <button type="button" 
+                  class="btn btn-sm" 
+                  [class.btn-danger]="student.status === 'absent'"
+                  (click)="updateAttendanceStatus(student, 'absent')">Absent</button>
               </div>
-              {{student.attendancePercentage}}%
-            </td>
-            <td>
-              <select class="form-select form-select-sm" [(ngModel)]="student.attendanceStatus">
-                <option value="present">Present</option>
-                <option value="absent">Absent</option>
-                <option value="late">Late</option>
-              </select>
             </td>
           </tr>
         </tbody>
       </table>
-      <button class="btn btn-primary" (click)="submitAttendance()">Save Attendance</button>
+      
+      <div class="d-flex justify-content-end mt-3">
+        <button class="btn btn-primary" (click)="markAttendance()">Save Attendance</button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="attendanceSummary" class="card mt-3">
+    <div class="card-header">
+      <h4>Attendance Summary</h4>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-3">
+          <div class="card text-white bg-success mb-3">
+            <div class="card-body">
+              <h5 class="card-title">Present</h5>
+              <p class="card-text">{{attendanceSummary.present}} ({{attendanceSummary.presentPercentage}}%)</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card text-white bg-warning mb-3">
+            <div class="card-body">
+              <h5 class="card-title">Late</h5>
+              <p class="card-text">{{attendanceSummary.late}}</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card text-white bg-danger mb-3">
+            <div class="card-body">
+              <h5 class="card-title">Absent</h5>
+              <p class="card-text">{{attendanceSummary.absent}}</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card text-white bg-info mb-3">
+            <div class="card-body">
+              <h5 class="card-title">Total</h5>
+              <p class="card-text">{{attendanceSummary.total}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

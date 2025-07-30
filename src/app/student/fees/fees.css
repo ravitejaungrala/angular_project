@@ -1,22 +1,135 @@
-.success {
-  color: green;
+/* Global Styling */
+body {
+  background: linear-gradient(135deg, #1f1c2c, #928dab);
+  font-family: 'Segoe UI', sans-serif;
+  color: #d0d0d0;
+  margin: 0;
+  padding: 0;
+}
+
+/* Glass Card */
+.payment-form, .payment-success, .fully-paid {
+  background: rgba(35, 35, 35, 0.6);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  padding: 25px;
+  margin-top: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease-in-out;
+  animation: fadeIn 0.5s ease-in;
+}
+.payment-form:hover, .payment-success:hover {
+  transform: scale(1.02);
+}
+/* Heading Styling */
+h2 {
+  font-size: 28px;
   font-weight: bold;
+  color: #ffd700; /* golden yellow */
+  margin-bottom: 20px;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+}
+/* Amount Due Label */
+label {
+  font-weight: bold;
+  color: #222; /* Dark text */
+  font-size: 18px;
+  display: block;
+  margin-bottom: 10px;
 }
 
-input {
-  margin: 0 10px;
-  padding: 5px;
-}
-
-button {
-  padding: 5px 15px;
-  background: #4CAF50;
-  color: white;
+/* Input Styling */
+input[type="number"] {
+  width: 100%;
+  padding: 10px 15px;
+  font-size: 16px;
   border: none;
+  border-radius: 8px;
+  background-color: #eaeaea;  /* light grey */
+  color: #333; /* dark text */
+  transition: background-color 0.3s, transform 0.2s;
+  box-shadow: inset 2px 2px 6px rgba(0,0,0,0.1);
+}
+
+input[type="number"]:focus {
+  outline: none;
+  background-color: #d3d3d3;
+  transform: scale(1.01);
+}
+
+/* Button Styling */
+button {
+  margin-top: 15px;
+  padding: 10px 20px;
+  font-size: 16px;
+  background: linear-gradient(135deg, #ff7e5f, #feb47b); /* Peach tone */
+  color: #111; /* dark text */
+  border: none;
+  border-radius: 8px;
   cursor: pointer;
+  font-weight: bold;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+  background: linear-gradient(135deg, #feb47b, #ff7e5f);
+  transform: translateY(-2px);
 }
 
 button:disabled {
-  background: #cccccc;
+  background: #888;
   cursor: not-allowed;
+  opacity: 0.6;
+}
+.payment-success {
+  color: #28a745; /* Green success text */
+  font-weight: bold;
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+/* Fully paid notice */
+.fully-paid {
+  color: #ff9800; /* Amber warning */
+  font-weight: bold;
+  animation: fadeIn 0.6s ease-in-out;
+}
+/* Payment Status Text */
+.payment-success p,
+.fully-paid p {
+  color: #e1f7d5;
+  margin: 8px 0;
+  font-weight: 500;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+  .payment-form, .payment-success, .fully-paid {
+    padding: 15px;
+  }
+  
+  input[type="number"] {
+    font-size: 0.95rem;
+  }
+  
+  h2 {
+    font-size:22px;
+}
 }

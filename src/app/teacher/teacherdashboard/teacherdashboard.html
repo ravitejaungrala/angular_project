@@ -1,50 +1,63 @@
 <!-- src/app/teacher/teacherdashboard/teacherdashboard.component.html -->
-<div class="container mt-4">
-  <h2>Teacher Dashboard</h2>
-  <p>Welcome, {{ teacher.name }} ({{ teacher.department }})</p>
-  
-  <div class="row mt-4">
+<div class="container mt-5 teacher-dashboard">
+  <h2 class="text-center mb-4 animated-heading">
+    <i class="bi bi-easel2-fill me-2"></i>Teacher Dashboard
+  </h2>
+  <p class="text-center welcome-text">
+    Welcome, <strong>{{ teacher.name }}</strong> ({{ teacher.department }})
+  </p>
+
+  <!-- Stats Cards -->
+  <div class="row g-4 mt-3">
     <div class="col-md-6">
-      <div class="card text-white bg-primary mb-3">
-        <div class="card-body">
-          <h5 class="card-title">Assigned Courses</h5>
+      <div class="card stat-card bg-gradient-primary text-white">
+        <div class="card-body text-center">
+          <i class="bi bi-journal-code fs-1"></i>
+          <h5 class="card-title mt-2">Assigned Courses</h5>
           <p class="card-text display-4">{{ stats.courses }}</p>
         </div>
       </div>
     </div>
-    
     <div class="col-md-6">
-      <div class="card text-white bg-success mb-3">
-        <div class="card-body">
-          <h5 class="card-title">Students</h5>
+      <div class="card stat-card bg-gradient-success text-white">
+        <div class="card-body text-center">
+          <i class="bi bi-people-fill fs-1"></i>
+          <h5 class="card-title mt-2">Students</h5>
           <p class="card-text display-4">{{ stats.students }}</p>
         </div>
       </div>
     </div>
   </div>
-  
-  <div class="row mt-4">
+
+  <!-- Quick Links and Activities -->
+  <div class="row g-4 mt-4">
     <div class="col-md-4">
-      <div class="card">
+      <div class="card shadow-sm quick-links-card">
         <div class="card-header bg-dark text-white">
-          Quick Links
+          <i class="bi bi-lightning-charge-fill me-2"></i>Quick Links
         </div>
         <div class="list-group list-group-flush">
-          <a routerLink="/teacher/courses" class="list-group-item list-group-item-action">My Courses</a>
-          <a routerLink="/teacher/students" class="list-group-item list-group-item-action">My Students</a>
-          <a routerLink="/teacher/marks" class="list-group-item list-group-item-action">Enter Marks</a>
+          <a routerLink="/teacher/courses" class="list-group-item list-group-item-action hover-link">
+            <i class="bi bi-journal-text me-2"></i>My Courses
+          </a>
+          <a routerLink="/teacher/students" class="list-group-item list-group-item-action hover-link">
+            <i class="bi bi-person-lines-fill me-2"></i>My Students
+          </a>
+          <a routerLink="/teacher/marks" class="list-group-item list-group-item-action hover-link">
+            <i class="bi bi-pencil-square me-2"></i>Enter Marks
+          </a>
         </div>
       </div>
     </div>
-    
+
     <div class="col-md-8">
-      <div class="card">
+      <div class="card recent-activities shadow-sm">
         <div class="card-header bg-dark text-white">
-          Recent Activities
+          <i class="bi bi-clock-history me-2"></i>Recent Activities
         </div>
         <div class="card-body">
-          <p>You have {{ stats.courses }} courses assigned.</p>
-          <p>You are teaching {{ stats.students }} students.</p>
+          <p><i class="bi bi-journal-bookmark-fill me-2 text-primary"></i>You have <strong>{{ stats.courses }}</strong> courses assigned.</p>
+          <p><i class="bi bi-people-fill me-2 text-success"></i>You are teaching <strong>{{ stats.students }}</strong> students.</p>
         </div>
       </div>
     </div>

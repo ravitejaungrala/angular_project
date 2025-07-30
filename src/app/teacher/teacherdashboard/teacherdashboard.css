@@ -1,0 +1,107 @@
+/* Fade-in animation for page title */
+.animated-heading {
+  animation: fadeInTop 0.8s ease;
+  font-weight: 700;
+  color: #333;
+  letter-spacing: 1px;
+}
+
+@keyframes fadeInTop {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Welcome Text Styling */
+.welcome-text {
+  font-size: 1.1rem;
+  color: #6c757d;
+  font-weight: 500;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.welcome-text:hover {
+  color: #343a40;
+  transform: scale(1.02);
+}
+
+/* Stat Card Styling */
+.stat-card {
+  border: none;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease, box-shadow 0.4s ease;
+  cursor: pointer;
+}
+
+.stat-card:hover {
+  transform: translateY(-10px) scale(1.03);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+}
+
+/* Gradient backgrounds */
+.bg-gradient-primary {
+  background: linear-gradient(to right, #007bff, #6f42c1);
+}
+
+.bg-gradient-success {
+  background: linear-gradient(to right, #28a745, #17a2b8);
+}
+
+/* Quick Links Card */
+.quick-links-card {
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.quick-links-card:hover {
+  transform: scale(1.02);
+}
+
+/* Quick Links Hover Styling */
+.hover-link {
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.hover-link:hover {
+  background-color: #f8f9fa;
+  color: #007bff;
+  padding-left: 15px;
+  font-weight: 600;
+  transform: translateX(5px);
+}
+
+/* Recent Activities Card */
+.recent-activities {
+  border-radius: 20px;
+  background-color: #ffffff;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.recent-activities:hover {
+  transform: scale(1.02);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.recent-activities p {
+  font-size: 1.05rem;
+  margin-bottom: 10px;
+  color: #333;
+  transition: color 0.3s ease;
+}
+
+.recent-activities p:hover {
+  color: #007bff;
+  transform: translateX(3px);
+}

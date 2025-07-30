@@ -244,7 +244,173 @@ private departments: Department[] = [
     { id: 40, name: 'Nora Kelly', email: 'nora@student.edu', department: 'ECE', year: 4, 
       courses: [407, 408, 409, 410], marks: {407: 79, 408: 84, 409: 81, 410: 76}, fees: {amount: 48000, paid: true} }
   ];
-  constructor() {this.loadStudentsFromStorage();  this.loadTeachersFromStorage();}
+  constructor() {this.loadStudentsFromStorage();  
+    this.loadTeachersFromStorage(); 
+    this.loadInitialData();
+  this.loadCoursesFromStorage();
+this.loadExaminationData();}
+  private examinations: Examination[] = [];
+private examSchedules: ExamSchedule[] = [];
+private hallTickets: HallTicket[] = [];
+private loadExaminationData(): void {
+  const storedExams = localStorage.getItem('examinations');
+  const storedSchedules = localStorage.getItem('examSchedules');
+  const storedTickets = localStorage.getItem('hallTickets');
+
+  this.examinations = storedExams ? JSON.parse(storedExams) : [];
+  this.examSchedules = storedSchedules ? JSON.parse(storedSchedules) : [];
+  this.hallTickets = storedTickets ? JSON.parse(storedTickets) : [];
+}
+  createExamination(exam: Examination): void {
+    exam.id = this.examinations.length > 0 ? Math.max(...this.examinations.map(e => e.id)) + 1 : 1;
+    this.examinations.push(exam);
+    this.saveExaminationData();
+  }
+
+  getExaminations(): Examination[] {
+    return this.examinations;
+  }
+
+  getExaminationById(id: number): Examination | undefined {
+    return this.examinations.find(e => e.id === id);
+  }
+
+  // Exam Schedule methods
+  createExamSchedule(schedule: ExamSchedule): void {
+    schedule.id = this.examSchedules.length > 0 ? Math.max(...this.examSchedules.map(s => s.id)) + 1 : 1;
+    this.examSchedules.push(schedule);
+    this.saveExaminationData();
+  }
+
+  getSchedulesByExam(examId: number): ExamSchedule[] {
+    return this.examSchedules.filter(s => s.examId === examId);
+  }
+
+  // Room Allocation methods
+  allocateRoomToExam(scheduleId: number, roomAllocation: RoomAllocation): void {
+    const schedule = this.examSchedules.find(s => s.id === scheduleId);
+    if (schedule) {
+      roomAllocation.id = schedule.roomAllocations.length > 0 ? 
+        Math.max(...schedule.roomAllocations.map(r => r.id)) + 1 : 1;
+      schedule.roomAllocations.push(roomAllocation);
+      this.saveExaminationData();
+    }
+  }
+
+  // Hall Ticket methods
+  generateHallTicket(studentId: number, examId: number): HallTicket | undefined {
+    const student = this.getStudentById(studentId);
+    const exam = this.getExaminationById(examId);
+    
+    if (!student || !exam) return undefined;
+
+    if (!student.fees.paid) return undefined;
+
+    const studentCourses = student.courses;
+    const relevantSchedules = this.examSchedules.filter(s => 
+      s.examId === examId && studentCourses.includes(s.courseId)
+    );
+
+    if (relevantSchedules.length === 0) return undefined;
+
+    let roomAllocation: RoomAllocation | undefined;
+    for (const schedule of relevantSchedules) {
+      roomAllocation = schedule.roomAllocations.find(r => 
+        r.studentIds.includes(studentId)
+      );
+      if (roomAllocation) break;
+    }
+
+    if (!roomAllocation) return undefined;
+
+    const existingTicket = this.hallTickets.find(t => 
+      t.studentId === studentId && t.examId === examId
+    );
+
+    if (existingTicket) return existingTicket;
+
+    const newTicket: HallTicket = {
+      id: this.hallTickets.length > 0 ? Math.max(...this.hallTickets.map(t => t.id)) + 1 : 1,
+      studentId,
+      examId,
+      courses: studentCourses,
+      roomNo: roomAllocation.roomNo,
+      block: roomAllocation.block,
+      examDate: relevantSchedules[0].date,
+      issuedDate: new Date().toISOString(),
+      isApproved: true
+    };
+
+    this.hallTickets.push(newTicket);
+    this.saveExaminationData();
+    return newTicket;
+  }
+
+  getHallTicket(studentId: number, examId: number): HallTicket | undefined {
+    return this.hallTickets.find(t => 
+      t.studentId === studentId && t.examId === examId
+    );
+  }
+
+  getStudentsInRoom(scheduleId: number, roomId: number): Student[] {
+    const schedule = this.examSchedules.find(s => s.id === scheduleId);
+    if (!schedule) return [];
+
+    const room = schedule.roomAllocations.find(r => r.id === roomId);
+    if (!room) return [];
+
+    return room.studentIds.map(id => this.getStudentById(id)).filter(s => s !== undefined) as Student[];
+  }
+
+  recordExamAttendance(scheduleId: number, roomId: number, studentId: number, status: 'present' | 'absent' | 'late'): void {
+    // In a real app, store this attendance in your data structure
+    console.log(`Attendance recorded: Student ${studentId} - ${status}`);
+  }
+
+ 
+  private saveExaminationData(): void {
+    localStorage.setItem('examinations', JSON.stringify(this.examinations));
+    localStorage.setItem('examSchedules', JSON.stringify(this.examSchedules));
+    localStorage.setItem('hallTickets', JSON.stringify(this.hallTickets));
+  }
+
+addCourse(course: Course): void {
+  if (!course.id) {
+    course.id = this.generateCourseId();
+  }
+  this.courses.push(course);
+  this.saveCoursesToStorage();
+}
+
+private generateCourseId(): number {
+  return this.courses.length > 0 ? Math.max(...this.courses.map(c => c.id)) + 1 : 101;
+}
+
+private saveCoursesToStorage(): void {
+  localStorage.setItem('coursesData', JSON.stringify(this.courses));
+}
+  private loadInitialData(): void {
+  // Initialize default data if not present in localStorage
+  if (!localStorage.getItem('departmentsData')) {
+    localStorage.setItem('departmentsData', JSON.stringify(this.departments));
+  }
+  if (!localStorage.getItem('coursesData')) {
+    localStorage.setItem('coursesData', JSON.stringify(this.courses));
+  }
+  if (!localStorage.getItem('teachersData')) {
+    localStorage.setItem('teachersData', JSON.stringify(this.teachers));
+  }
+  if (!localStorage.getItem('studentsData')) {
+    localStorage.setItem('studentsData', JSON.stringify(this.students));
+  }
+}
+
+private loadCoursesFromStorage(): void {
+  const storedCourses = localStorage.getItem('coursesData');
+  if (storedCourses) {
+    this.courses = JSON.parse(storedCourses);
+  }
+}
 
   private loadStudentsFromStorage(): void {
     const storedData = localStorage.getItem('studentsData');
@@ -331,9 +497,9 @@ private generateStudentId(): number {
     return this.courses.filter(course => course.department === dept);
   }
 
-  addCourse(course: Course): void {
-    this.courses.push(course);
-  }
+  // addCourse(course: Course): void {
+  //   this.courses.push(course);
+  // }
 
   updateCourse(updatedCourse: Course): void {
     const index = this.courses.findIndex(course => course.id === updatedCourse.id);
@@ -403,6 +569,53 @@ private saveTeachersToStorage(): void {
   return this.students.filter(student => 
     student.courses.includes(courseId)
   );
+}
+getCoursesForTeacher(teacherId: number): Course[] {
+  const teacher = this.getTeacherById(teacherId);
+  if (!teacher) return [];
+  
+  return teacher.courses
+    .map(courseId => this.getCourseById(courseId))
+    .filter(course => course !== undefined) as Course[];
+}
+saveAttendanceToStorage(courseId: number, date: string, records: AttendanceRecord[]): void {
+  // Get current data
+  const courses: Course[] = JSON.parse(localStorage.getItem('coursesData') || '[]');
+  const students: Student[] = JSON.parse(localStorage.getItem('studentsData') || '[]');
+
+  // Update course attendance
+  const courseIndex = courses.findIndex(c => c.id === courseId);
+  if (courseIndex !== -1) {
+    if (!courses[courseIndex].attendanceRecords) {
+      courses[courseIndex].attendanceRecords = {};
+    }
+    courses[courseIndex].attendanceRecords[date] = records;
+  }
+
+  // Update student records
+  records.forEach(record => {
+    const studentIndex = students.findIndex(s => s.id === record.studentId);
+    if (studentIndex !== -1) {
+      if (!students[studentIndex].attendance) {
+        students[studentIndex].attendance = [];
+      }
+      
+      // Remove existing record for this date/course
+      students[studentIndex].attendance = students[studentIndex].attendance
+        .filter(a => !(a.date === date && a.courseId === courseId));
+      
+      // Add new record
+      students[studentIndex].attendance.push(record);
+    }
+  });
+
+  // Save back to localStorage
+  localStorage.setItem('coursesData', JSON.stringify(courses));
+  localStorage.setItem('studentsData', JSON.stringify(students));
+
+  // Update service state
+  this.courses = courses;
+  this.students = students;
 }
 getTeacherCourses(teacherId: number): Course[] {
     const teacher = this.getTeacherById(teacherId);
@@ -582,6 +795,131 @@ validateUser(username: string, password: string): { role: string, id?: number } 
   
   return null;
 }
+// Update the markAttendance method with proper typing
+markAttendance(courseId: number, date: string, attendanceData: {studentId: number, status: 'present' | 'absent' | 'late'}[]): void {
+  // Get current data from localStorage with proper typing
+  const storedCourses: Course[] = JSON.parse(localStorage.getItem('coursesData') || '[]');
+  const storedStudents: Student[] = JSON.parse(localStorage.getItem('studentsData') || '[]');
+
+  // Find the course with proper typing
+  const courseIndex = storedCourses.findIndex((c: Course) => c.id === courseId);
+  if (courseIndex === -1) {
+    console.error('Course not found:', courseId);
+    return;
+  }
+
+  // Initialize attendanceRecords if not exists
+  if (!storedCourses[courseIndex].attendanceRecords) {
+    storedCourses[courseIndex].attendanceRecords = {};
+  }
+
+  // Update course attendance records
+  storedCourses[courseIndex].attendanceRecords[date] = attendanceData.map(data => ({
+    studentId: data.studentId,
+    date,
+    status: data.status,
+    courseId
+  }));
+
+  // Update each student's attendance record
+  attendanceData.forEach(data => {
+    const studentIndex = storedStudents.findIndex((s: Student) => s.id === data.studentId);
+    if (studentIndex !== -1) {
+      if (!storedStudents[studentIndex].attendance) {
+        storedStudents[studentIndex].attendance = [];
+      }
+      
+      // Remove existing record if exists
+      storedStudents[studentIndex].attendance = storedStudents[studentIndex].attendance.filter(
+        (record: AttendanceRecord) => !(record.date === date && record.courseId === courseId)
+      );
+      
+      // Add new record
+      storedStudents[studentIndex].attendance.push({
+        studentId: data.studentId,
+        date,
+        status: data.status,
+        courseId
+      });
+    }
+  });
+
+  // Save back to localStorage
+  localStorage.setItem('coursesData', JSON.stringify(storedCourses));
+  localStorage.setItem('studentsData', JSON.stringify(storedStudents));
+
+  // Update service's local copies
+  this.courses = storedCourses;
+  this.students = storedStudents;
+
+  // Trigger storage event to notify all tabs/components
+  this.triggerStorageUpdates();
+}
+private triggerStorageUpdates(): void {
+  const event = new StorageEvent('storage', {
+    key: 'attendanceUpdated',
+    newValue: Date.now().toString(),
+    oldValue: null,
+    storageArea: localStorage,
+    url: window.location.href
+  });
+  window.dispatchEvent(event);
+}
+getAllCourseAttendance(courseId: number): AttendanceRecord[] {
+  const course = this.getCourseById(courseId);
+  if (!course?.attendanceRecords) return [];
+  
+  return Object.values(course.attendanceRecords).flat();
+}
+updateAttendanceRecord(record: AttendanceRecord): void {
+  // Update course records
+  const course = this.getCourseById(record.courseId);
+  if (course && course.attendanceRecords && course.attendanceRecords[record.date]) {
+    const index = course.attendanceRecords[record.date].findIndex(
+      r => r.studentId === record.studentId && r.date === record.date
+    );
+    if (index !== -1) {
+      course.attendanceRecords[record.date][index] = record;
+    }
+  }
+
+  // Update student records
+  const student = this.getStudentById(record.studentId);
+  if (student?.attendance) {
+    const index = student.attendance.findIndex(
+      a => a.date === record.date && a.courseId === record.courseId
+    );
+    if (index !== -1) {
+      student.attendance[index] = record;
+    }
+  }
+
+  this.saveStudentsToStorage();
+  this.triggerStorageEvent();
+}
+deleteAttendanceRecord(courseId: number, date: string, studentId: number): void {
+  // Delete from course records
+  const course = this.getCourseById(courseId);
+  if (course?.attendanceRecords && course.attendanceRecords[date]) {
+    course.attendanceRecords[date] = course.attendanceRecords[date].filter(
+      r => r.studentId !== studentId
+    );
+    if (course.attendanceRecords[date].length === 0) {
+      delete course.attendanceRecords[date];
+    }
+  }
+
+  // Delete from student records
+  const student = this.getStudentById(studentId);
+  if (student?.attendance) {
+    student.attendance = student.attendance.filter(
+      a => !(a.date === date && a.courseId === courseId)
+    );
+  }
+
+  this.saveStudentsToStorage();
+  this.triggerStorageEvent();
+}
 // Get attendance for a student
 getStudentAttendance(studentId: number): AttendanceRecord[] {
   const student = this.getStudentById(studentId);
@@ -593,47 +931,7 @@ getCourseAttendance(courseId: number, date: string): AttendanceRecord[] {
   const course = this.getCourseById(courseId);
   return course?.attendanceRecords?.[date] || [];
 }
-// Update the markAttendance method to include studentId in the records
-markAttendance(courseId: number, date: string, attendanceData: {studentId: number, status: 'present' | 'absent' | 'late'}[]): void {
-  // Update course attendance records
-  const course = this.getCourseById(courseId);
-  if (!course) return;
 
-  if (!course.attendanceRecords) {
-    course.attendanceRecords = {};
-  }
-  
-  // Include studentId in the course attendance records
-  course.attendanceRecords[date] = attendanceData.map(data => ({
-    studentId: data.studentId, // Add this line
-    date,
-    status: data.status,
-    courseId
-  }));
-
-  // Update each student's attendance record
-  attendanceData.forEach(data => {
-    const student = this.getStudentById(data.studentId);
-    if (student) {
-      if (!student.attendance) {
-        student.attendance = [];
-      }
-      
-      // Remove existing record for this date/course if it exists
-      student.attendance = student.attendance.filter(
-        record => !(record.date === date && record.courseId === courseId)
-      );
-      
-      // Add new record with studentId
-      student.attendance.push({
-        studentId: data.studentId, // Add this line
-        date,
-        status: data.status,
-        courseId
-      });
-    }
-  });
-}
 // Get attendance percentage for a student in a course
 getAttendancePercentage(studentId: number, courseId: number): number {
   const student = this.getStudentById(studentId);

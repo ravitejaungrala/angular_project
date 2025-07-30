@@ -1,15 +1,16 @@
 <div class="container mt-4">
-  <h2>Student Dashboard</h2>
+  <h2><i class="bi bi-person-circle me-2"></i>Student Dashboard</h2>
   <p>
-    Welcome, {{ student.name }} ({{ student.department }} - Year {{ student.year }})
+    Welcome, <strong>{{ student.name }}</strong> ({{ student.department }} - Year {{ student.year }})
   </p>
 
   <div class="row mt-4">
     <!-- Courses Card -->
     <div class="col-md-4">
       <div class="card text-white bg-primary mb-3">
-        <div class="card-body">
-          <h5 class="card-title">Courses</h5>
+        <div class="card-body text-center">
+          <i class="bi bi-journal-text fs-1"></i>
+          <h5 class="card-title mt-2">Courses</h5>
           <p class="card-text display-4">{{ student.courses.length }}</p>
         </div>
       </div>
@@ -18,8 +19,9 @@
     <!-- Average Marks Card -->
     <div class="col-md-4">
       <div class="card text-white bg-success mb-3">
-        <div class="card-body">
-          <h5 class="card-title">Average Marks</h5>
+        <div class="card-body text-center">
+          <i class="bi bi-bar-chart-line-fill fs-1"></i>
+          <h5 class="card-title mt-2">Average Marks</h5>
           <p class="card-text display-4">{{ averageMarks | number: '1.0-0' }}%</p>
         </div>
       </div>
@@ -28,8 +30,9 @@
     <!-- Fees Status Card -->
     <div class="col-md-4">
       <div class="card text-white bg-info mb-3">
-        <div class="card-body">
-          <h5 class="card-title">Fees Status</h5>
+        <div class="card-body text-center">
+          <i class="bi bi-cash-coin fs-1"></i>
+          <h5 class="card-title mt-2">Fees Status</h5>
           <p class="card-text display-4">
             <span [ngClass]="student.fees.paid ? 'text-success' : 'text-danger'">
               {{ student.fees.paid ? 'Paid' : 'Due' }}
@@ -41,13 +44,15 @@
   </div>
 
   <!-- Fee Summary Section -->
-   <div class="card mt-4">
-    <div class="card-header bg-dark text-white">Fee Summary</div>
+  <div class="card mt-4">
+    <div class="card-header bg-dark text-white">
+      <i class="bi bi-receipt me-2"></i>Fee Summary
+    </div>
     <div class="card-body">
       <div class="row">
         <!-- College Fees Summary -->
         <div class="col-md-6">
-          <h5>College Fees</h5>
+          <h5><i class="bi bi-bank2 me-1"></i>College Fees</h5>
           <div class="fee-row">
             <span class="fee-label">Total Fee:</span>
             <span class="fee-value">₹{{ totalCollegeFee }}</span>
@@ -64,7 +69,7 @@
 
         <!-- Hostel Fees Summary -->
         <div class="col-md-6" *ngIf="student?.hostel?.allocated">
-          <h5>Hostel Fees</h5>
+          <h5><i class="bi bi-house-door-fill me-1"></i>Hostel Fees</h5>
           <div class="fee-row">
             <span class="fee-label">Total Fee:</span>
             <span class="fee-value">₹{{ totalHostelFee }}</span>
@@ -87,13 +92,13 @@
     <div class="col-md-6">
       <div class="card">
         <div class="card-header bg-primary text-white">
-          College Fees
+          <i class="bi bi-bank me-2"></i>College Fees
         </div>
         <div class="card-body">
           <p><strong>Status:</strong> {{ collegeFeeStatus }}</p>
           <a routerLink="/student/fees" class="btn btn-sm btn-outline-primary" 
              *ngIf="!collegeFeePaid">
-            Pay College Fees
+            <i class="bi bi-credit-card me-1"></i>Pay College Fees
           </a>
         </div>
       </div>
@@ -102,30 +107,43 @@
     <div class="col-md-6">
       <div class="card">
         <div class="card-header bg-info text-white">
-          Hostel Fees
+          <i class="bi bi-house-door me-2"></i>Hostel Fees
         </div>
         <div class="card-body">
           <p><strong>Status:</strong> {{ hostelFeeStatus }}</p>
           <a routerLink="/student/hostel" class="btn btn-sm btn-outline-info"
              *ngIf="student?.hostel?.allocated && !hostelFeePaid">
-            Pay Hostel Fees
+            <i class="bi bi-credit-card-2-front me-1"></i>Pay Hostel Fees
           </a>
-          <p *ngIf="!student?.hostel?.allocated">Not allocated to hostel</p>
+          <p *ngIf="!student?.hostel?.allocated">
+            <i class="bi bi-x-circle text-danger me-1"></i>Not allocated to hostel
+          </p>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- Quick Links and Recent Activities -->
   <div class="row mt-4">
     <!-- Quick Links -->
     <div class="col-md-4">
       <div class="card">
-        <div class="card-header bg-dark text-white">Quick Links</div>
+        <div class="card-header bg-dark text-white">
+          <i class="bi bi-lightning-fill me-2"></i>Quick Links
+        </div>
         <div class="list-group list-group-flush">
-          <a routerLink="/student/courses" class="list-group-item list-group-item-action">My Courses</a>
-          <a routerLink="/student/marks" class="list-group-item list-group-item-action">My Marks</a>
-          <a routerLink="/student/fees" class="list-group-item list-group-item-action">Fee Details</a>
-          <a routerLink="/student/hostel" class="list-group-item list-group-item-action">Hostel Details</a>
+          <a routerLink="/student/courses" class="list-group-item list-group-item-action">
+            <i class="bi bi-journal-bookmark me-2"></i>My Courses
+          </a>
+          <a routerLink="/student/marks" class="list-group-item list-group-item-action">
+            <i class="bi bi-pencil-square me-2"></i>My Marks
+          </a>
+          <a routerLink="/student/fees" class="list-group-item list-group-item-action">
+            <i class="bi bi-wallet2 me-2"></i>Fee Details
+          </a>
+          <a routerLink="/student/hostel" class="list-group-item list-group-item-action">
+            <i class="bi bi-house-check me-2"></i>Hostel Details
+          </a>
         </div>
       </div>
     </div>
@@ -133,18 +151,22 @@
     <!-- Recent Activities -->
     <div class="col-md-8">
       <div class="card">
-        <div class="card-header bg-dark text-white">Recent Activities</div>
+        <div class="card-header bg-dark text-white">
+          <i class="bi bi-clock-history me-2"></i>Recent Activities
+        </div>
         <div class="card-body">
-          <p>You are enrolled in {{ student.courses.length }} courses this semester.</p>
+          <p><i class="bi bi-journal-text me-2 text-primary"></i>You are enrolled in {{ student.courses.length }} courses this semester.</p>
           <p *ngIf="student?.hostel">
-            Your hostel room: {{ student.hostel?.block }} - {{ student.hostel?.roomNo }}<br>
-            Hostel fees: {{ student.hostel.fees.paid ? 'Paid' : 'Due (₹' + student.hostel.fees.amount + ')' }}
+            <i class="bi bi-door-open me-2 text-info"></i>Your hostel room: {{ student.hostel?.block }} - {{ student.hostel?.roomNo }}<br>
+            <i class="bi bi-house-fill me-2 text-info"></i>Hostel fees: 
+            {{ student.hostel.fees.paid ? 'Paid' : 'Due (₹' + student.hostel.fees.amount + ')' }}
           </p>
           <p>
-            College fees: {{ student.fees.paid ? 'Paid' : 'Due (₹' + student.fees.amount + ')' }}
+            <i class="bi bi-bank2 me-2 text-primary"></i>College fees: 
+            {{ student.fees.paid ? 'Paid' : 'Due (₹' + student.fees.amount + ')' }}
           </p>
           <p *ngIf="lastPayment">
-            Last payment: ₹{{ lastPayment.amount }} on {{ lastPayment.date | date }}
+            <i class="bi bi-currency-rupee me-2 text-success"></i>Last payment: ₹{{ lastPayment.amount }} on {{ lastPayment.date | date }}
           </p>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Dataservices } from '../../service/dataservices';
 import { ActivatedRoute } from '@angular/router';
 
@@ -10,16 +10,24 @@ import { ActivatedRoute } from '@angular/router';
   styleUrl: './attendances.css'
 })
 export class Attendances {
-  courses: any[] = [];
-  studentsByCourse: {[courseId: number]: any[]} = {};
+ teacherCourses: Course[] = [];
+  students: StudentWithAttendance[] = [];
+  attendanceForm: FormGroup;
+  selectedCourse: Course | null = null;
   attendanceDate: string = new Date().toISOString().split('T')[0];
   teacherId: number;
 
   constructor(
     private dataService: Dataservices,
-    private route: ActivatedRoute
+    private fb: FormBuilder
   ) {
-    this.teacherId = Number(this.route.snapshot.paramMap.get('id'));
+    this.attendanceForm = this.fb.group({
+      courseId: ['', Validators.required],
+      date: [this.attendanceDate, Validators.required]
+    });
+
+    const teacherUser = JSON.parse(localStorage.getItem('teacherUser') || '{}');
+    this.teacherId = teacherUser.id;
   }
 
   ngOnInit(): void {
@@ -27,67 +35,70 @@ export class Attendances {
   }
 
   loadTeacherCourses(): void {
-    const teacher = this.dataService.getTeacherById(this.teacherId);
-    if (teacher) {
-      this.courses = teacher.courses
-        .map(courseId => this.dataService.getCourseById(courseId))
-        .filter(course => course !== undefined);
-      
-      this.loadStudentsForCourses();
+    this.teacherCourses = this.dataService.getCoursesForTeacher(this.teacherId);
+  }
+
+  onCourseSelect(): void {
+    const courseId = Number(this.attendanceForm.value.courseId);
+    this.selectedCourse = this.teacherCourses.find(c => c.id === courseId) || null;
+    
+    if (this.selectedCourse) {
+      this.loadStudentsForCourse();
+      this.loadAttendanceRecords();
     }
   }
 
-  loadStudentsForCourses(): void {
-    this.studentsByCourse = {};
-    this.courses.forEach(course => {
-      this.studentsByCourse[course.id] = this.dataService.getStudentsByCourse(course.id)
-        .map(student => {
-          const attendancePercentage = this.dataService.getAttendancePercentage(
-            student.id, 
-            course.id
-          );
-          
-          return {
-            ...student,
-            courseId: course.id,
-            attendancePercentage: attendancePercentage || 0,
-            attendanceStatus: 'present' // Default status
-          };
-        });
-    });
-    this.loadAttendanceRecords();
-  }
-
-  onDateChange(): void {
-    this.loadAttendanceRecords();
+  loadStudentsForCourse(): void {
+    if (!this.selectedCourse) return;
+    
+    const students = this.dataService.getStudentsByCourse(this.selectedCourse.id);
+    this.students = students.map(student => ({
+      ...student,
+      status: 'present' as 'present' | 'absent' | 'late'
+    }));
   }
 
   loadAttendanceRecords(): void {
-    this.courses.forEach(course => {
-      const records = this.dataService.getCourseAttendance(course.id, this.attendanceDate);
-      
-      this.studentsByCourse[course.id]?.forEach(student => {
-        const existingRecord = records.find(record => record.studentId === student.id);
-        student.attendanceStatus = existingRecord?.status || 'present';
+    if (!this.selectedCourse) return;
+
+    const date = this.attendanceForm.value.date;
+    const records = this.dataService.getCourseAttendance(this.selectedCourse.id, date);
+    
+    if (records.length > 0) {
+      this.students.forEach(student => {
+        const record = records.find(r => r.studentId === student.id);
+        if (record) {
+          student.status = record.status;
+        }
       });
-    });
+    }
   }
 
-  submitAttendance(): void {
-    this.courses.forEach(course => {
-      const attendanceData = this.studentsByCourse[course.id]?.map(student => ({
-        studentId: student.id,
-        status: student.attendanceStatus
-      })) || [];
-      
-      this.dataService.markAttendance(
-        course.id,
-        this.attendanceDate,
-        attendanceData
-      );
-    });
-    
-    alert('Attendance saved successfully!');
-    this.loadStudentsForCourses();
+  updateAttendanceStatus(student: StudentWithAttendance, status: 'present' | 'absent' | 'late'): void {
+    student.status = status;
   }
+
+  saveAttendance(): void {
+    if (!this.selectedCourse) return;
+
+    const date = this.attendanceForm.value.date;
+    const records = this.students.map(student => ({
+      studentId: student.id,
+      date,
+      status: student.status,
+      courseId: this.selectedCourse!.id
+    }));
+
+    this.dataService.saveAttendanceToStorage(
+      this.selectedCourse.id,
+      date,
+      records
+    );
+
+    alert('Attendance saved successfully!');
+  }
+}
+
+interface StudentWithAttendance extends Student {
+  status: 'present' | 'absent' | 'late';
 }

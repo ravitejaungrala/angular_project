@@ -1,0 +1,189 @@
+/* Container */
+.container {
+  max-width: 1200px;
+  margin: auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Header */
+h2 {
+  text-align: center;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 25px;
+  position: relative;
+}
+
+h2::after {
+  content: "";
+  display: block;
+  width: 100px;
+  height: 3px;
+  background: #17a2b8;
+  margin: 8px auto 0;
+  border-radius: 4px;
+}
+
+/* Card */
+.card {
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+.card:hover {
+  transform: scale(1.005);
+  transition: transform 0.3s ease;
+}
+
+.card-header {
+  background: linear-gradient(45deg, #0f2027, #203a43, #2c5364);
+  color: #fff;
+  font-weight: 500;
+  font-size: 1.1rem;
+  border-radius: 12px 12px 0 0;
+}
+
+/* Form Controls */
+.form-group {
+  margin-bottom: 15px;
+}
+
+label {
+  font-weight: 500;
+}
+
+.form-control {
+  border-radius: 8px;
+  padding: 8px 12px;
+  border: 1px solid #ced4da;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.form-control:focus {
+  border-color: #17a2b8;
+  box-shadow: 0 0 0 0.2rem rgba(23, 162, 184, 0.25);
+}
+
+/* Table */
+.table {
+  margin-top: 10px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.table thead {
+  background-color: #343a40;
+  color: #fff;
+}
+
+.table td,
+.table th {
+  vertical-align: middle;
+  text-align: center;
+  padding: 12px;
+}
+
+.table-striped tbody tr:nth-child(odd) {
+  background-color: #f8f9fa;
+}
+
+.table tbody tr:hover {
+  background-color: #e3f7fa;
+  transition: background-color 0.3s ease;
+}
+
+/* Badges */
+.badge {
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  border-radius: 20px;
+}
+
+.badge-success {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.badge-danger {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+/* Buttons */
+.btn {
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.3s ease-in-out;
+}
+
+.btn-sm {
+  margin: 2px;
+}
+
+.btn-success {
+  background-color: #28a745;
+  border: none;
+  color: white;
+}
+
+.btn-success:hover {
+  background-color: #218838;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  border: none;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
+}
+
+/* Input for fee amount */
+input[type="number"] {
+  border-radius: 8px;
+  padding: 6px;
+  text-align: right;
+  font-weight: 500;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  h2 {
+    font-size: 1.4rem;
+  }
+
+  .card-header {
+    font-size: 1rem;
+  }
+
+  .btn {
+    font-size: 0.75rem;
+    padding: 5px 10px;
+  }
+
+  .form-group label {
+    font-size: 0.9rem;
+  }
+
+  .table th,
+  .table td {
+    font-size: 0.85rem;
+  }
+}

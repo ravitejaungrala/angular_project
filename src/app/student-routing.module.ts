@@ -7,6 +7,7 @@ import { Mark } from './student/mark/mark';
 import { Fees } from './student/fees/fees';
 import { Hostel } from './student/hostel/hostel';
 import { Attendances } from './student/attendances/attendances';
+
 const routes: Routes = [
   { 
     path: '', 
@@ -17,7 +18,8 @@ const routes: Routes = [
             { path: 'marks', component: Mark},
             { path: 'fees', component: Fees },
             { path: 'hostel', component: Hostel },
-            {path:'attendances',component:Attendances}
+            {path:'attendances',component:Attendances},
+            
     ]
   }
 ];

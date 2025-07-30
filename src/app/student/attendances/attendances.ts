@@ -9,55 +9,62 @@ import { ActivatedRoute } from '@angular/router';
   styleUrl: './attendances.css'
 })
 export class Attendances {
-
-attendanceRecords: any[] = [];
-  attendanceSummary: any[] = [];
+   attendanceRecords: AttendanceRecord[] = [];
   studentId: number;
+  courses: {id: number, name: string}[] = [];
+  attendanceSummary: any[] = [];
 
-  constructor(
-    private dataService: Dataservices,
-    private route: ActivatedRoute
-  ) {
-    this.studentId = Number(this.route.snapshot.paramMap.get('id'));
+  constructor(private dataService: Dataservices) {
+    const studentUser = JSON.parse(localStorage.getItem('studentUser') || '{}');
+    this.studentId = studentUser.id;
   }
 
   ngOnInit(): void {
-    this.loadAttendance();
-  }
-getCourseName(courseId: number): string {
-    const course = this.dataService.getCourseById(courseId);
-    return course ? course.name : 'Unknown Course';
+    this.loadAttendanceData();
+    window.addEventListener('storage', () => this.loadAttendanceData());
   }
 
-  loadAttendance(): void {
-    // Load all attendance records for the student
-    const student = this.dataService.getStudentById(this.studentId);
+  loadAttendanceData(): void {
+    // Get fresh data from localStorage
+    const storedStudents: Student[] = JSON.parse(localStorage.getItem('studentsData') || '[]');
+    const storedCourses: Course[] = JSON.parse(localStorage.getItem('coursesData') || '[]');
+    
+    const student = storedStudents.find(s => s.id === this.studentId);
     this.attendanceRecords = student?.attendance || [];
     
-    // Calculate summary statistics
-    const courses = this.dataService.getCourses();
-    this.attendanceSummary = courses
-      .filter(course => student?.courses.includes(course.id))
-      .map(course => {
-        const courseAttendance = this.attendanceRecords.filter(
-          a => a.courseId === course.id
-        );
-        
-        const presentCount = courseAttendance.filter(
-          a => a.status === 'present'
-        ).length;
-        
-        const percentage = courseAttendance.length > 0 
-          ? Math.round((presentCount / courseAttendance.length) * 100) 
-          : 0;
-        
-        return {
-          courseId: course.id,
-          courseName: course.name,
-          totalClasses: courseAttendance.length,
-          presentClasses: presentCount,
-          percentage: percentage
-        };
-      });
+    // Get unique course IDs from attendance records
+    const courseIds = [...new Set(this.attendanceRecords.map(r => r.courseId))];
+    
+    // Create course list with just id and name
+    this.courses = courseIds.map(id => {
+      const course = storedCourses.find(c => c.id === id);
+      return course ? {id: course.id, name: course.name} : {id: 0, name: 'Unknown Course'};
+    });
+    
+    this.loadAttendanceSummary();
+  }
+
+  // Add this method to filter attendance by course
+  getAttendanceByCourse(courseId: number): AttendanceRecord[] {
+    return this.attendanceRecords.filter(record => record.courseId === courseId);
+  }
+
+  loadAttendanceSummary(): void {
+    this.attendanceSummary = this.courses.map(course => {
+      const courseRecords = this.getAttendanceByCourse(course.id);
+      const presentCount = courseRecords.filter(r => r.status === 'present').length;
+      const percentage = courseRecords.length > 0 
+        ? Math.round((presentCount / courseRecords.length) * 100)
+        : 0;
+      
+      return {
+        courseId: course.id,
+        courseName: course.name,
+        totalClasses: courseRecords.length,
+        presentClasses: presentCount,
+        percentage: percentage,
+        status: percentage >= 75 ? 'Good' : percentage >= 50 ? 'Warning' : 'Danger'
+      };
+    });
   }
 }

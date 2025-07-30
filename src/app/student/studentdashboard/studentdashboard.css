@@ -1,27 +1,147 @@
+/* Body Background */
+body {
+  background: linear-gradient(135deg, #1f1f1f, #2e2e2e);
+  color: #d0d0d0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Main Container */
+.container {
+  color: #ccc; /* medium gray */
+  padding-bottom: 50px;
+}
+
+/* Glass Card */
+.card {
+  background: rgba(30, 30, 30, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+  color: #dcdcdc; /* clear but not too light */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px) scale(1.015);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.6);
+}
+
+/* Card Header */
+.card-header {
+  background: rgba(0, 0, 0, 0.6);
+  font-weight: 600;
+  color: #f0932b; /* amber-orange */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Colored Cards */
+.bg-primary {
+  background: linear-gradient(to right, #0d47a1, #1976d2) !important;
+}
+
+.bg-success {
+  background: linear-gradient(to right, #2e7d32, #43a047) !important;
+}
+
+.bg-info {
+  background: linear-gradient(to right, #006064, #0097a7) !important;
+}
+
+.bg-dark {
+  background: linear-gradient(to right, #212121, #424242) !important;
+}
+
+/* Statistic Text */
+.display-4 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #fbc02d; /* strong yellow */
+}
+
+/* Fee Summary Section */
 .fee-row {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 10px;
-  padding: 8px;
-  border-bottom: 1px solid #eee;
+  padding: 6px 0;
+  font-size: 1rem;
 }
 
 .fee-label {
-  font-weight: bold;
+  font-weight: 500;
+  color: #90caf9; /* soft blue */
 }
 
 .fee-value {
-  font-weight: 500;
-}
-
-.paid {
-  color: #28a745; /* Green for paid amounts */
-}
-
-.due {
-  color: #dc3545; /* Red for due amounts */
-}
-
-.card-header {
   font-weight: bold;
+  color: #e0e0e0;
+}
+
+.fee-value.paid {
+  color: #66bb6a; /* medium green */
+}
+
+.fee-value.due {
+  color: #ef5350; /* medium red */
+}
+
+/* Buttons */
+.btn-outline-primary,
+.btn-outline-info {
+  border-radius: 20px;
+  color: #ffca28;
+  border-color: #ffca28;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover,
+.btn-outline-info:hover {
+  background-color: #ffca28;
+  color: #1f1f1f;
+  transform: scale(1.05);
+}
+
+/* Quick Links */
+.list-group-item {
+  background-color: rgba(255, 255, 255, 0.03);
+  color: #f0ad4e; /* warm orange */
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.list-group-item:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: #ffa726; /* darker orange */
+  transform: translateX(5px);
+}
+
+/* Headings */
+h2,
+h5 {
+  font-weight: 700;
+  color: #fbc02d;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+/* Entry Animation */
+.card {
+  animation: fadeInUp 0.5s ease-in-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .display-4 {
+    font-size: 2rem;
+  }
 }
